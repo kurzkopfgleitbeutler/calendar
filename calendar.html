@@ -122,16 +122,17 @@
 	 /* https://attacomsian.com/blog/javascript-set-css-styles#constructable-stylesheets */
 	 var style = insertElement('style', 'head');
 	 style.sheet.insertRule(`* { box-sizing: border-box; }`);
-	 style.sheet.insertRule(`html { margin: none; padding: none; font-size: 14; }`);
-	 style.sheet.insertRule(`header { height: 6%; max-height: 6%; display: grid; grid-template-columns: repeat(7, 1fr); padding-top: 0.5em; padding-bottom: 0.5em; }`);
-	 /* style.sheet.insertRule(`time { padding-top: 0.4em; padding-bottom: 0.4em; }`); */
-	 style.sheet.insertRule(`time { padding-top: 0.4em; padding-bottom: 0.4em; padding-left: 1em; padding-right: 5em; }`);
-	 /* style.sheet.insertRule(`.year { display: grid; grid-template-columns: repeat(${months}, 1fr); }`); */
-	 style.sheet.insertRule(`.year { display: grid; grid-template-rows: repeat(${months}, 1fr); height: 94%; }`);
-	 /* style.sheet.insertRule(`.month { display: flex; flex-direction: column; }`); */
-	 style.sheet.insertRule(`.month { display: flex; flex-direction: row; align-items: center; }`);
-	 style.sheet.insertRule(`.monthHeader { border-bottom: 2px solid #bbb; }`);
+	 style.sheet.insertRule(`html, body { margin: 0; padding: 0; font-size: 14; }`);
+	 style.sheet.insertRule(`header { height: 4em; max-height: 4em; display: grid; grid-template-columns: repeat(7, 1fr); padding-top: 0.5em; padding-bottom: 0.5em; position: fixed; width: 100%; }`);
+	 style.sheet.insertRule(`time { padding-top: 0.2em; padding-bottom: 1em; }`);
+	 /* style.sheet.insertRule(`time { min-width: 5em; max-width: 5em; height: 100%; vertical-align: baseline; }`); */
+	 style.sheet.insertRule(`.year { display: grid; grid-template-columns: repeat(${months}, 1fr); }`);
+	 /* style.sheet.insertRule(`.year { display: grid; grid-template-rows: repeat(${months}, 1fr); height: 94%; }`); */
+	 style.sheet.insertRule(`.month { display: flex; flex-direction: column; }`);
+	 /* style.sheet.insertRule(`.month { display: flex; flex-direction: row; align-items: center; }`); */
+	 style.sheet.insertRule(`.monthHeader { margin-top: 4em; border-bottom: 2px solid #bbb; }`);
 	 style.sheet.insertRule(`.day { border-bottom: 1px solid #ddd; }`);
+	 style.sheet.insertRule(`.weekend { background: #eee; }`);
 	 style.sheet.insertRule(`.today { border-bottom: 1px solid #bbb; background: #ddd; }`);
 	 /* style.innerHTML = `
 	    .year {
