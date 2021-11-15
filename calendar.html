@@ -124,27 +124,14 @@
 	 var style = insertElement('style', 'head');
 	 style.sheet.insertRule(`* { box-sizing: border-box; }`);
 	 style.sheet.insertRule(`html, body { margin: 0; padding: 0; font-size: 14; }`);
-	 style.sheet.insertRule(`header { height: 4em; max-height: 4em; display: grid; grid-template-columns: repeat(7, 1fr); padding-top: 0.5em; padding-bottom: 0.5em; position: fixed; width: 100%; }`);
-	 style.sheet.insertRule(`time { padding-top: 0.2em; padding-bottom: 1em; }`);
-	 /* style.sheet.insertRule(`time { min-width: 5em; max-width: 5em; height: 100%; vertical-align: baseline; }`); */
+	 style.sheet.insertRule(`header { height: 3em; max-height: 3em; display: grid; grid-template-columns: repeat(7, 1fr); width: 100%; }`);
+	 style.sheet.insertRule(`time { border-bottom: 1px solid #ddd; padding-top: 0.2em; padding-bottom: 1em; }`);
 	 style.sheet.insertRule(`.year { display: grid; grid-template-columns: repeat(${months}, 1fr); }`);
-	 /* style.sheet.insertRule(`.year { display: grid; grid-template-rows: repeat(${months}, 1fr); height: 94%; }`); */
 	 style.sheet.insertRule(`.month { display: flex; flex-direction: column; }`);
-	 /* style.sheet.insertRule(`.month { display: flex; flex-direction: row; align-items: center; }`); */
-	 style.sheet.insertRule(`.monthHeader { margin-top: 4em; border-bottom: 2px solid #bbb; }`);
-	 style.sheet.insertRule(`.day { border-bottom: 1px solid #ddd; }`);
+	 style.sheet.insertRule(`.monthHeader { border-bottom: 2px solid #bbb; }`);
+	 style.sheet.insertRule(`.day {  }`);
 	 style.sheet.insertRule(`.weekend { background: #eee; }`);
 	 style.sheet.insertRule(`.today { border-bottom: 1px solid #bbb; background: #ddd; }`);
-	 /* style.innerHTML = `
-	    .year {
-	    display: grid;
-	    grid-template-columns: repeat(${months}, 1fr);
-	    }
-	  *    .month {
-	  *      display: grid;
-	  *      grid-template-rows: repeat(30, 1fr);
-	  *    }
-	    `; */
 
 	 var body = document.querySelector('body');
 	 var header = insertElement('header');
@@ -161,8 +148,6 @@
 	     updateInterface();
 	 }
 
-	 /* var testDateDisplay = insertElement('span', header, testDate.toDateString()); */
-
 	 var testBtnNext = insertElement('button', header, 'Next', [['id', 'nextBtn']]);
 	 testBtnNext.onclick = function(e) {
 	     testDate.setDate(testDate.getDate() + 1);
@@ -177,7 +162,6 @@
 
 	 var monthSelect = insertElement('select', header, null, [['id', 'selectMonth']]);
 	 monthSelect.onchange = function(e) {
-	     /* testDate.setMonth(monthSelect.options[monthSelect.selectedIndex].text); */
 	     testDate.setMonth(monthSelect.selectedIndex);
 	     updateInterface();
 	 }
@@ -190,10 +174,7 @@
 
 	 var intlSelect = insertElement('select', header, null, [['id', 'selectIntl']]);
 	 intlSelect.onchange = function(e) {
-	     /* currentIntl = intlSelect.options[intlSelect.selectedIndex].text; */
 	     currentIntl = intls[intlSelect.selectedIndex][1];
-	     /* console.log(new Intl.DateTimeFormat('de-DE', { month: 'long' }).format(testDate)); */
-	     /* console.log(new Intl.DateTimeFormat('en-EN', { weekday: 'short' }).format(testDate)); */
 	     updateInterface();
 	 }
 
@@ -224,13 +205,11 @@
 	     for (i=0 ; i < months; i++) {
 
 		 var month = insertElement('time', year, null, [['class', 'month'], ['datetime', testDate.getFullYear() + '-' + String(i).padStart(2, '0')]]);
-		 /* var monthHeader = insertElement('span', month, monthArray[i], [['class', 'monthHeader']]) */
 		 var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(testDate.getFullYear(), i));
 		 var monthHeader = insertElement('span', month, monthName, [['class', 'monthHeader']])
 
 		 for(j=1 ; j <= daysInMonth(i, testDate.getFullYear()); j++) {
 
-		     /* var weekDayName = getWeekDayName(new Date(testDate.getFullYear(), i, j)); */
 		     var theDate = new Date(testDate.getFullYear(), i, j);
 		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
 		     var textContent = `${String(j).padStart(2, '0')} ${weekDayName}`;
@@ -242,7 +221,6 @@
 		     } else {
 			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} day`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
 		     }
-		     /* var inner = insertElement('span', day, textContent); */
 		     day.onclick = function(e) {
 			 testDate = parseISOString(this.getAttribute('datetime'));
 			 updateInterface();
@@ -256,7 +234,6 @@
 		for setting 'day' and 'today' classes, only replace it in
 		the affected cells via date parsing */
 	 }
-
 
 	 var daysInYear = 365.24;
 	 var agreedWeeksInYear = 60;
