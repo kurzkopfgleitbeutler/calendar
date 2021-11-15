@@ -231,14 +231,18 @@
 		 for(j=1 ; j <= daysInMonth(i, testDate.getFullYear()); j++) {
 
 		     /* var weekDayName = getWeekDayName(new Date(testDate.getFullYear(), i, j)); */
-		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(new Date(testDate.getFullYear(), i, j));
+		     var theDate = new Date(testDate.getFullYear(), i, j);
+		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
 		     var textContent = `${String(j).padStart(2, '0')} ${weekDayName}`;
 
 		     if ( j === testDate.getDate() && i === testDate.getMonth()) {
 			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} today`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+		     } else if (theDate.getDay() === 6 || theDate.getDay() === 0) {
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} day weekend`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
 		     } else {
 			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} day`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
 		     }
+		     /* var inner = insertElement('span', day, textContent); */
 		     day.onclick = function(e) {
 			 testDate = parseISOString(this.getAttribute('datetime'));
 			 updateInterface();
