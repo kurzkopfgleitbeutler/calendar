@@ -6,220 +6,255 @@
     </head>
     <body>
 
-	<!-- <nav>switch between year/month view</nav>
-
-	     <footer>layout (default, sixdayweek, perennial)</footer>
-	-->
 	<script type="text/javascript">
 
-	 function insertElement(type, target = body, textcontent, attributes) {
-	     var elem = document.createElement(type);
-	     if(textcontent) {
-		 elem.textContent = textcontent;
+	 document.addEventListener('DOMContentLoaded', function () {
+
+	     function insertElement(type, target = body, textcontent, attributes) {
+		 var elem = document.createElement(type);
+		 if(textcontent) {
+		     elem.textContent = textcontent;
+		 }
+		 if(attributes) {
+		     for(var [attr, content] of attributes) {
+			 if (content) {
+			     elem.setAttribute(attr, content);
+			 } else {
+			     elem.setAttribute(attr, "");
+			 }
+		     }
+		 }
+		 if(target === 'head') {
+		     document.head.appendChild(elem);
+		 } else {
+		     target.appendChild(elem);
+		 }
+		 return elem;
 	     }
-	     if(attributes) {
-		 for(var [attr, content] of attributes) {
-		     if (content) {
-			 elem.setAttribute(attr, content);
+
+	     /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
+	     function daysInMonth(month, year) {
+		 return new Date(year, month + 1, 0).getDate();
+	     }
+
+	     function setDayPicker() {
+		 daySelect.innerHTML = "";
+		 for (i = 1 ; i <= daysInMonth(testDate.getMonth(), testDate.getYear()) ; i++) {
+		     if (i === testDate.getDate()) {
+			 insertElement('option', daySelect, i, [['value', i], ['selected']]);
 		     } else {
-			 elem.setAttribute(attr, "");
+			 insertElement('option', daySelect, i, [['value', i]]);
 		     }
 		 }
 	     }
-	     if(target === 'head') {
-		 document.head.appendChild(elem);
-	     } else {
-		 target.appendChild(elem);
-	     }
-	     return elem;
-	 }
 
-	 /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
-	 function daysInMonth(month, year) {
-	     /* var n = new Date(year, month + 1, 0).getDate(); */
-	     /* console.log(`current month has ${n} days`); */
-	     return new Date(year, month + 1, 0).getDate();
-	 }
-
-	 function setDayPicker() {
-	     daySelect.innerHTML = "";
-	     for (i = 1 ; i <= daysInMonth(testDate.getMonth(), testDate.getYear()) ; i++) {
-		 if (i === testDate.getDate()) {
-		     insertElement('option', daySelect, i, [['value', i], ['selected']]);
-		 } else {
-		     insertElement('option', daySelect, i, [['value', i]]);
-		 }
-	     }
-	 }
-
-	 function setMonthPicker() {
-	     monthSelect.innerHTML = "";
-	     for (i = 1 ; i <= 12 ; i++) {
-		 if (i === testDate.getMonth() + 1) {
-		     insertElement('option', monthSelect, i, [['value', i], ['selected']]);
-		 } else {
-		     insertElement('option', monthSelect, i, [['value', i]]);
-		 }
-	     }
-	 }
-
-	 function setYearPicker() {
-	     yearSelect.innerHTML = "";
-	     for (i = testDate.getFullYear() - 101 ; i < testDate.getFullYear() + 100 ; i++) {
-		 if (i === testDate.getFullYear()) {
-		     insertElement('option', yearSelect, i, [['value', i], ['selected']]);
-		 } else {
-		     insertElement('option', yearSelect, i, [['value', i]]);
-		 }
-	     }
-	 }
-
-	 function setIntlPicker() {
-	     intlSelect.innerHTML = "";
-	     /* var intls = navigator.languages; */
-	     var intls = ['en', 'de', 'fr', 'es', 'ja', 'zh', 'it', 'nb', 'is'];
-	     for (i = 0 ; i < intls.length ; i++) {
-		 if (intls[i] === currentIntl) {
-		     insertElement('option', intlSelect, intls[i], [['value', i], ['selected']]);
-		 } else {
-		     insertElement('option', intlSelect, intls[i], [['value', i]]);
-		 }
-	     }
-	 }
-
-	 /* https://stackoverflow.com/a/69034315
-	    modified 'en' to 'en-US' */
-	 /* var intls = [ ['Abkhazian', 'ab'], ['Afar', 'aa'], ['Afrikaans', 'af'], ['Akan', 'ak'], ['Albanian', 'sq'], ['Amharic', 'am'], ['Arabic', 'ar'], ['Aragonese', 'an'], ['Armenian', 'hy'], ['Assamese', 'as'], ['Avaric', 'av'], ['Avestan', 'ae'], ['Aymara', 'ay'], ['Azerbaijani', 'az'], ['Bambara', 'bm'], ['Bashkir', 'ba'], ['Basque', 'eu'], ['Belarusian', 'be'], ['Bengali (Bangla)', 'bn'], ['Bihari', 'bh'], ['Bislama', 'bi'], ['Bosnian', 'bs'], ['Breton', 'br'], ['Bulgarian', 'bg'], ['Burmese', 'my'], ['Catalan', 'ca'], ['Chamorro', 'ch'], ['Chechen', 'ce'], ['Chichewa, Chewa, Nyanja', 'ny'], ['Chinese', 'zh'], ['Chinese (Simplified)', 'zh-Hans'], ['Chinese (Traditional)', 'zh-Hant'], ['Chuvash', 'cv'], ['Cornish', 'kw'], ['Corsican', 'co'], ['Cree', 'cr'], ['Croatian', 'hr'], ['Czech', 'cs'], ['Danish', 'da'], ['Divehi, Dhivehi, Maldivian', 'dv'], ['Dutch', 'nl'], ['Dzongkha', 'dz'], ['English', 'en-US'], ['Esperanto', 'eo'], ['Estonian', 'et'], ['Ewe', 'ee'], ['Faroese', 'fo'], ['Fijian', 'fj'], ['Finnish', 'fi'], ['French', 'fr'], ['Fula, Fulah, Pulaar, Pular', 'ff'], ['Galician', 'gl'], ['Gaelic (Scottish)', 'gd'], ['Gaelic (Manx)', 'gv'], ['Georgian', 'ka'], ['German', 'de'], ['Greek', 'el'], ['Greenlandic', 'kl'], ['Guarani', 'gn'], ['Gujarati', 'gu'], ['Haitian Creole', 'ht'], ['Hausa', 'ha'], ['Hebrew', 'he'], ['Herero', 'hz'], ['Hindi', 'hi'], ['Hiri Motu', 'ho'], ['Hungarian', 'hu'], ['Icelandic', 'is'], ['Ido', 'io'], ['Igbo', 'ig'], ['Indonesian', 'id, in'], ['Interlingua', 'ia'], ['Interlingue', 'ie'], ['Inuktitut', 'iu'], ['Inupiak', 'ik'], ['Irish', 'ga'], ['Italian', 'it'], ['Japanese', 'ja'], ['Javanese', 'jv'], ['Kalaallisut, Greenlandic', 'kl'], ['Kannada', 'kn'], ['Kanuri', 'kr'], ['Kashmiri', 'ks'], ['Kazakh', 'kk'], ['Khmer', 'km'], ['Kikuyu', 'ki'], ['Kinyarwanda (Rwanda)', 'rw'], ['Kirundi', 'rn'], ['Kyrgyz', 'ky'], ['Komi', 'kv'], ['Kongo', 'kg'], ['Korean', 'ko'], ['Kurdish', 'ku'], ['Kwanyama', 'kj'], ['Lao', 'lo'], ['Latin', 'la'], ['Latvian (Lettish)', 'lv'], ['Limburgish ( Limburger)', 'li'], ['Lingala', 'ln'], ['Lithuanian', 'lt'], ['Luga-Katanga', 'lu'], ['Luganda, Ganda', 'lg'], ['Luxembourgish', 'lb'], ['Manx', 'gv'], ['Macedonian', 'mk'], ['Malagasy', 'mg'], ['Malay', 'ms'], ['Malayalam', 'ml'], ['Maltese', 'mt'], ['Maori', 'mi'], ['Marathi', 'mr'], ['Marshallese', 'mh'], ['Moldavian', 'mo'], ['Mongolian', 'mn'], ['Nauru', 'na'], ['Navajo', 'nv'], ['Ndonga', 'ng'], ['Northern Ndebele', 'nd'], ['Nepali', 'ne'], ['Norwegian', 'no'], ['Norwegian bokmål', 'nb'], ['Norwegian nynorsk', 'nn'], ['Nuosu', 'ii'], ['Occitan', 'oc'], ['Ojibwe', 'oj'], ['Old Church Slavonic, Old Bulgarian', 'cu'], ['Oriya', 'or'], ['Oromo (Afaan Oromo)', 'om'], ['Ossetian', 'os'], ['Pāli', 'pi'], ['Pashto, Pushto', 'ps'], ['Persian (Farsi)', 'fa'], ['Polish', 'pl'], ['Portuguese', 'pt'], ['Punjabi (Eastern)', 'pa'], ['Quechua', 'qu'], ['Romansh', 'rm'], ['Romanian', 'ro'], ['Russian', 'ru'], ['Sami', 'se'], ['Samoan', 'sm'], ['Sango', 'sg'], ['Sanskrit', 'sa'], ['Serbian', 'sr'], ['Serbo-Croatian', 'sh'], ['Sesotho', 'st'], ['Setswana', 'tn'], ['Shona', 'sn'], ['Sichuan Yi', 'ii'], ['Sindhi', 'sd'], ['Sinhalese', 'si'], ['Siswati', 'ss'], ['Slovak', 'sk'], ['Slovenian', 'sl'], ['Somali', 'so'], ['Southern Ndebele', 'nr'], ['Spanish', 'es'], ['Sundanese', 'su'], ['Swahili (Kiswahili)', 'sw'], ['Swati', 'ss'], ['Swedish', 'sv'], ['Tagalog', 'tl'], ['Tahitian', 'ty'], ['Tajik', 'tg'], ['Tamil', 'ta'], ['Tatar', 'tt'], ['Telugu', 'te'], ['Thai', 'th'], ['Tibetan', 'bo'], ['Tigrinya', 'ti'], ['Tonga', 'to'], ['Tsonga', 'ts'], ['Turkish', 'tr'], ['Turkmen', 'tk'], ['Twi', 'tw'], ['Uyghur', 'ug'], ['Ukrainian', 'uk'], ['Urdu', 'ur'], ['Uzbek', 'uz'], ['Venda', 've'], ['Vietnamese', 'vi'], ['Volapük', 'vo'], ['Wallon', 'wa'], ['Welsh', 'cy'], ['Wolof', 'wo'], ['Western Frisian', 'fy'], ['Xhosa', 'xh'], ['Yiddish', 'yi', 'ji'], ['Yoruba', 'yo'], ['Zhuang, Chuang', 'za'], ['Zulu', 'zu'] ]; */
-	 var intls = [ ['Arabic', 'ar'], ['Armenian', 'hy'], ['Chinese (Simplified)', 'zh-Hans'], ['Dutch', 'nl'], ['English', 'en-US'], ['Esperanto', 'eo'], ['Gaelic (Scottish)', 'gd'], ['German', 'de'], ['Greek', 'el'], ['Hebrew', 'he'], ['Hindi', 'hi'], ['Irish', 'ga'], ['Japanese', 'ja'], ['Korean', 'ko'], ['Malayalam', 'ml'], ['Nepali', 'ne'], ['Norwegian bokmål', 'nb'], ['Russian', 'ru'], ['Spanish', 'es'], ['Uyghur', 'ug'], ['Urdu', 'ur'], ['Welsh', 'cy'] ];
-	 function setAllIntlPicker() {
-	     intlSelect.innerHTML = "";
-	     for (i = 0 ; i < intls.length ; i++) {
-		 if (intls[i][1] === currentIntl) {
-		     insertElement('option', intlSelect, intls[i][0], [['value', i], ['selected']]);
-		 } else {
-		     insertElement('option', intlSelect, intls[i][0], [['value', i]]);
-		 }
-	     }
-	 }
-
-	 function updateInterface() {
-	     /* testDateDisplay.textContent = testDate.toDateString(); */
-	     setDayPicker();
-	     setMonthPicker();
-	     setYearPicker();
-	     setAllIntlPicker();
-	     drawCalendarYear();
-	     console.log(`new Intl: ${currentIntl}`);
-	     console.log(`new Date: ${testDate.toDateString()}`);
-	 }
-
-	 var testDate = new Date();
-	 var currentIntl = navigator.language;
-	 var monthArray = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-	 var months = monthArray.length;
-
-	 var title = insertElement('title', 'head', `Calendar for ${testDate.getFullYear()}`);
-
-	 /* https://attacomsian.com/blog/javascript-set-css-styles#constructable-stylesheets */
-	 var style = insertElement('style', 'head');
-	 style.sheet.insertRule(`* { box-sizing: border-box; }`);
-	 style.sheet.insertRule(`html, body { margin: 0; padding: 0; font-size: 14; }`);
-	 style.sheet.insertRule(`header { height: 3em; max-height: 3em; display: grid; grid-template-columns: repeat(7, 1fr); width: 100%; }`);
-	 style.sheet.insertRule(`time { border-bottom: 1px solid #ddd; padding-top: 0.2em; padding-bottom: 1em; }`);
-	 style.sheet.insertRule(`.year { display: grid; grid-template-columns: repeat(${months}, 1fr); }`);
-	 style.sheet.insertRule(`.month { display: flex; flex-direction: column; }`);
-	 style.sheet.insertRule(`.monthHeader { border-bottom: 2px solid #bbb; }`);
-	 style.sheet.insertRule(`.day {  }`);
-	 style.sheet.insertRule(`.weekend { background: #eee; }`);
-	 style.sheet.insertRule(`.today { border-bottom: 1px solid #bbb; background: #ddd; }`);
-
-	 var body = document.querySelector('body');
-	 var header = insertElement('header');
-
-	 var testBtnToday = insertElement('button', header, 'Today', [['id', 'todayBtn']]);
-	 testBtnToday.onclick = function(e) {
-	     testDate = new Date();
-	     updateInterface();
-	 }
-
-	 var testBtnPrev = insertElement('button', header, 'Previous', [['id', 'prevBtn']]);
-	 testBtnPrev.onclick = function(e) {
-	     testDate.setDate(testDate.getDate() - 1);
-	     updateInterface();
-	 }
-
-	 var testBtnNext = insertElement('button', header, 'Next', [['id', 'nextBtn']]);
-	 testBtnNext.onclick = function(e) {
-	     testDate.setDate(testDate.getDate() + 1);
-	     updateInterface();
-	 }
-
-	 var daySelect = insertElement('select', header, null, [['id', 'selectDay']]);
-	 daySelect.onchange = function(e) {
-	     testDate.setDate(daySelect.options[daySelect.selectedIndex].text);
-	     updateInterface();
-	 }
-
-	 var monthSelect = insertElement('select', header, null, [['id', 'selectMonth']]);
-	 monthSelect.onchange = function(e) {
-	     testDate.setMonth(monthSelect.selectedIndex);
-	     updateInterface();
-	 }
-
-	 var yearSelect = insertElement('select', header, null, [['id', 'selectYear']]);
-	 yearSelect.onchange = function(e) {
-	     testDate.setFullYear(yearSelect.options[yearSelect.selectedIndex].text);
-	     updateInterface();
-	 }
-
-	 var intlSelect = insertElement('select', header, null, [['id', 'selectIntl']]);
-	 intlSelect.onchange = function(e) {
-	     currentIntl = intls[intlSelect.selectedIndex][1];
-	     updateInterface();
-	 }
-
-	 function getWeekDayName(dateToName) {
-	     switch(dateToName.getDay()) {
-		 case 0: return 'Sun';
-		 case 1: return 'Mon';
-		 case 2: return 'Tue';
-		 case 3: return 'Wed';
-		 case 4: return 'Thu';
-		 case 5: return 'Fri';
-		 case 6: return 'Sat';
-	     }
-	 }
-
-	 /* https://stackoverflow.com/a/27013409 */
-	 function parseISOString(s) {
-	     var b = s.split(/\D+/);
-	     return new Date(Date.UTC(b[0], --b[1], b[2]));
-	 }
-
-	 function drawCalendarYear() {
-
-	     main.innerHTML = "";
-
-	     var year = insertElement('time', main, null, [['class', 'year'], ['datetime', testDate.getFullYear()]]);
-
-	     for (i=0 ; i < months; i++) {
-
-		 var month = insertElement('time', year, null, [['class', 'month'], ['datetime', testDate.getFullYear() + '-' + String(i).padStart(2, '0')]]);
-		 var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(testDate.getFullYear(), i));
-		 var monthHeader = insertElement('span', month, monthName, [['class', 'monthHeader']])
-
-		 for(j=1 ; j <= daysInMonth(i, testDate.getFullYear()); j++) {
-
-		     var theDate = new Date(testDate.getFullYear(), i, j);
-		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
-		     var textContent = `${String(j).padStart(2, '0')} ${weekDayName}`;
-
-		     if ( j === testDate.getDate() && i === testDate.getMonth()) {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} today`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
-		     } else if (theDate.getDay() === 6 || theDate.getDay() === 0) {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} day weekend`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+	     function setMonthPicker() {
+		 monthSelect.innerHTML = "";
+		 for (i = 1 ; i <= 12 ; i++) {
+		     if (i === testDate.getMonth() + 1) {
+			 insertElement('option', monthSelect, i, [['value', i], ['selected']]);
 		     } else {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayName} day`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+			 insertElement('option', monthSelect, i, [['value', i]]);
+		     }
+		 }
+	     }
+
+	     function setYearPicker() {
+		 yearSelect.innerHTML = "";
+		 for (i = testDate.getFullYear() - 101 ; i < testDate.getFullYear() + 101 ; i++) {
+		     if (i === testDate.getFullYear()) {
+			 insertElement('option', yearSelect, i, [['value', i], ['selected']]);
+		     } else {
+			 insertElement('option', yearSelect, i, [['value', i]]);
+		     }
+		 }
+	     }
+
+	     /* https://stackoverflow.com/a/69034315
+		modified 'en' to 'en-US' */
+	     /* var intls = [ ['Abkhazian', 'ab'], ['Afar', 'aa'], ['Afrikaans', 'af'], ['Akan', 'ak'], ['Albanian', 'sq'], ['Amharic', 'am'], ['Arabic', 'ar'], ['Aragonese', 'an'], ['Armenian', 'hy'], ['Assamese', 'as'], ['Avaric', 'av'], ['Avestan', 'ae'], ['Aymara', 'ay'], ['Azerbaijani', 'az'], ['Bambara', 'bm'], ['Bashkir', 'ba'], ['Basque', 'eu'], ['Belarusian', 'be'], ['Bengali (Bangla)', 'bn'], ['Bihari', 'bh'], ['Bislama', 'bi'], ['Bosnian', 'bs'], ['Breton', 'br'], ['Bulgarian', 'bg'], ['Burmese', 'my'], ['Catalan', 'ca'], ['Chamorro', 'ch'], ['Chechen', 'ce'], ['Chichewa, Chewa, Nyanja', 'ny'], ['Chinese', 'zh'], ['Chinese (Simplified)', 'zh-Hans'], ['Chinese (Traditional)', 'zh-Hant'], ['Chuvash', 'cv'], ['Cornish', 'kw'], ['Corsican', 'co'], ['Cree', 'cr'], ['Croatian', 'hr'], ['Czech', 'cs'], ['Danish', 'da'], ['Divehi, Dhivehi, Maldivian', 'dv'], ['Dutch', 'nl'], ['Dzongkha', 'dz'], ['English', 'en-US'], ['Esperanto', 'eo'], ['Estonian', 'et'], ['Ewe', 'ee'], ['Faroese', 'fo'], ['Fijian', 'fj'], ['Finnish', 'fi'], ['French', 'fr'], ['Fula, Fulah, Pulaar, Pular', 'ff'], ['Galician', 'gl'], ['Gaelic (Scottish)', 'gd'], ['Gaelic (Manx)', 'gv'], ['Georgian', 'ka'], ['German', 'de'], ['Greek', 'el'], ['Greenlandic', 'kl'], ['Guarani', 'gn'], ['Gujarati', 'gu'], ['Haitian Creole', 'ht'], ['Hausa', 'ha'], ['Hebrew', 'he'], ['Herero', 'hz'], ['Hindi', 'hi'], ['Hiri Motu', 'ho'], ['Hungarian', 'hu'], ['Icelandic', 'is'], ['Ido', 'io'], ['Igbo', 'ig'], ['Indonesian', 'id, in'], ['Interlingua', 'ia'], ['Interlingue', 'ie'], ['Inuktitut', 'iu'], ['Inupiak', 'ik'], ['Irish', 'ga'], ['Italian', 'it'], ['Japanese', 'ja'], ['Javanese', 'jv'], ['Kalaallisut, Greenlandic', 'kl'], ['Kannada', 'kn'], ['Kanuri', 'kr'], ['Kashmiri', 'ks'], ['Kazakh', 'kk'], ['Khmer', 'km'], ['Kikuyu', 'ki'], ['Kinyarwanda (Rwanda)', 'rw'], ['Kirundi', 'rn'], ['Kyrgyz', 'ky'], ['Komi', 'kv'], ['Kongo', 'kg'], ['Korean', 'ko'], ['Kurdish', 'ku'], ['Kwanyama', 'kj'], ['Lao', 'lo'], ['Latin', 'la'], ['Latvian (Lettish)', 'lv'], ['Limburgish ( Limburger)', 'li'], ['Lingala', 'ln'], ['Lithuanian', 'lt'], ['Luga-Katanga', 'lu'], ['Luganda, Ganda', 'lg'], ['Luxembourgish', 'lb'], ['Manx', 'gv'], ['Macedonian', 'mk'], ['Malagasy', 'mg'], ['Malay', 'ms'], ['Malayalam', 'ml'], ['Maltese', 'mt'], ['Maori', 'mi'], ['Marathi', 'mr'], ['Marshallese', 'mh'], ['Moldavian', 'mo'], ['Mongolian', 'mn'], ['Nauru', 'na'], ['Navajo', 'nv'], ['Ndonga', 'ng'], ['Northern Ndebele', 'nd'], ['Nepali', 'ne'], ['Norwegian', 'no'], ['Norwegian bokmål', 'nb'], ['Norwegian nynorsk', 'nn'], ['Nuosu', 'ii'], ['Occitan', 'oc'], ['Ojibwe', 'oj'], ['Old Church Slavonic, Old Bulgarian', 'cu'], ['Oriya', 'or'], ['Oromo (Afaan Oromo)', 'om'], ['Ossetian', 'os'], ['Pāli', 'pi'], ['Pashto, Pushto', 'ps'], ['Persian (Farsi)', 'fa'], ['Polish', 'pl'], ['Portuguese', 'pt'], ['Punjabi (Eastern)', 'pa'], ['Quechua', 'qu'], ['Romansh', 'rm'], ['Romanian', 'ro'], ['Russian', 'ru'], ['Sami', 'se'], ['Samoan', 'sm'], ['Sango', 'sg'], ['Sanskrit', 'sa'], ['Serbian', 'sr'], ['Serbo-Croatian', 'sh'], ['Sesotho', 'st'], ['Setswana', 'tn'], ['Shona', 'sn'], ['Sichuan Yi', 'ii'], ['Sindhi', 'sd'], ['Sinhalese', 'si'], ['Siswati', 'ss'], ['Slovak', 'sk'], ['Slovenian', 'sl'], ['Somali', 'so'], ['Southern Ndebele', 'nr'], ['Spanish', 'es'], ['Sundanese', 'su'], ['Swahili (Kiswahili)', 'sw'], ['Swati', 'ss'], ['Swedish', 'sv'], ['Tagalog', 'tl'], ['Tahitian', 'ty'], ['Tajik', 'tg'], ['Tamil', 'ta'], ['Tatar', 'tt'], ['Telugu', 'te'], ['Thai', 'th'], ['Tibetan', 'bo'], ['Tigrinya', 'ti'], ['Tonga', 'to'], ['Tsonga', 'ts'], ['Turkish', 'tr'], ['Turkmen', 'tk'], ['Twi', 'tw'], ['Uyghur', 'ug'], ['Ukrainian', 'uk'], ['Urdu', 'ur'], ['Uzbek', 'uz'], ['Venda', 've'], ['Vietnamese', 'vi'], ['Volapük', 'vo'], ['Wallon', 'wa'], ['Welsh', 'cy'], ['Wolof', 'wo'], ['Western Frisian', 'fy'], ['Xhosa', 'xh'], ['Yiddish', 'yi', 'ji'], ['Yoruba', 'yo'], ['Zhuang, Chuang', 'za'], ['Zulu', 'zu'] ]; */
+	     var intls = [ ['Arabic', 'ar'], ['Armenian', 'hy'], ['Chinese (Simplified)', 'zh-Hans'], ['Dutch', 'nl'], ['English', 'en-US'], ['Esperanto', 'eo'], ['Gaelic (Scottish)', 'gd'], ['German', 'de'], ['Greek', 'el'], ['Hebrew', 'he'], ['Hindi', 'hi'], ['Irish', 'ga'], ['Japanese', 'ja'], ['Korean', 'ko'], ['Malayalam', 'ml'], ['Nepali', 'ne'], ['Norwegian bokmål', 'nb'], ['Russian', 'ru'], ['Spanish', 'es'], ['Uyghur', 'ug'], ['Urdu', 'ur'], ['Welsh', 'cy'] ];
+	     function setIntlPicker() {
+		 intlSelect.innerHTML = "";
+		 for (i = 0 ; i < intls.length ; i++) {
+		     if (intls[i][1] === currentIntl) {
+			 insertElement('option', intlSelect, intls[i][0], [['value', i], ['selected']]);
+		     } else {
+			 insertElement('option', intlSelect, intls[i][0], [['value', i]]);
+		     }
+		 }
+	     }
+
+	     function setCalendarLayout(selector, rulestring) {
+		 /* TODO: delete style for smaller screens, add for
+		    larger, and vice versa, instead of defining by screen
+		    width */
+		 var rules = document.styleSheets[0].cssRules;
+		 for (i = 0 ; i < rules.length ; i++) {
+		     if (rules[i].selectorText === selector) {
+			 rules.deleteRule(i);
+		     }
+		 }
+		 style.sheet.insertRule(rulestring);
+	     }
+
+	     function init() {
+		 console.log(document.styleSheets[0].cssRules);
+		 drawCalendarYear();
+	     }
+
+	     function updateInterface(newDate) {
+		 /* testDateDisplay.textContent = testDate.toDateString(); */
+		 /* setDayPicker(); */
+		 /* setMonthPicker(); */
+		 setYearPicker();
+		 setIntlPicker();
+		 /* updateTodayInCalendar(newDate); */
+		 drawCalendarYear();
+		 /* drawCalendarMonth(); */
+		 /* console.log(`new Intl: ${currentIntl}`); */
+		 /* console.log(`new Date: ${testDate.toDateString()}`); */
+	     }
+
+	     var testDate = new Date();
+	     var currentIntl = navigator.language;
+	     var monthArray = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+	     var months = monthArray.length;
+
+	     var title = insertElement('title', 'head', `Calendar for ${testDate.getFullYear()}`);
+
+	     /* https://attacomsian.com/blog/javascript-set-css-styles#constructable-stylesheets */
+	     var style = insertElement('style', 'head');
+	     style.sheet.insertRule(`* { box-sizing: border-box; }`);
+	     style.sheet.insertRule(`html, body { margin: 0; padding: 0; font-size: 14; }`);
+	     style.sheet.insertRule(`header { height: 3em; max-height: 3em; display: grid; grid-template-columns: repeat(7, 1fr); width: 100%; position: fixed; }`);
+	     style.sheet.insertRule(`time { padding-top: 0.2em; padding-bottom: 1em; }`);
+
+	     style.sheet.insertRule(`@media screen and (max-width: 500px) { .year { display: flex; flex-direction: column; } }`);
+	     style.sheet.insertRule(`@media screen and (min-width: 500px) and (max-width: 800px) { .year { display: grid; grid-template-columns: repeat(${months / 2}, 1fr); } }`);
+	     style.sheet.insertRule(`@media screen and (min-width: 800px) { .year { display: grid; grid-template-columns: repeat(${months}, 1fr); } }`);
+
+	     style.sheet.insertRule(`.year { padding-top: 3em; }`);
+	     style.sheet.insertRule(`.month { display: flex; flex-direction: column; }`);
+	     style.sheet.insertRule(`.monthHeader { border-bottom: 2px solid #bbb; text-decoration: none; color: #000; }`);
+	     style.sheet.insertRule(`.day { border-bottom: 1px solid #ddd; font-size: 10; }`);
+	     style.sheet.insertRule(`.Sat, .Sun { border-bottom: 1px solid #ddd; background: #eee; }`);
+	     style.sheet.insertRule(`.today { border-bottom: 1px solid #bbb; background: #ddd !important; }`);
+
+	     style.sheet.insertRule(`.monthonly { display: grid; grid-template-columns: repeat(7, 1fr); }`);
+	     style.sheet.insertRule(`.monthonly > :first-child { grid-column-start: 3; }`);
+
+	     var body = document.querySelector('body');
+	     var header = insertElement('header');
+
+	     var testBtnToday = insertElement('button', header, 'Today', [['id', 'todayBtn']]);
+	     testBtnToday.onclick = function(e) {
+		 testDate = new Date();
+		 updateInterface(testDate);
+	     }
+
+	     /* var testBtnPrev = insertElement('button', header, 'Previous', [['id', 'prevBtn']]);
+		testBtnPrev.onclick = function(e) {
+		testDate.setDate(testDate.getDate() - 1);
+		updateInterface(testDate);
+		}
+
+		var testBtnNext = insertElement('button', header, 'Next', [['id', 'nextBtn']]);
+		testBtnNext.onclick = function(e) {
+		testDate.setDate(testDate.getDate() + 1);
+		updateInterface(testDate);
+		}
+
+		var daySelect = insertElement('select', header, null, [['id', 'selectDay']]);
+		daySelect.onchange = function(e) {
+		testDate.setDate(daySelect.options[daySelect.selectedIndex].text);
+		updateInterface(testDate);
+		}
+
+		var monthSelect = insertElement('select', header, null, [['id', 'selectMonth']]);
+		monthSelect.onchange = function(e) {
+		testDate.setMonth(monthSelect.selectedIndex);
+		updateInterface(testDate);
+		}
+	      */
+	     var yearSelect = insertElement('select', header, null, [['id', 'selectYear']]);
+	     yearSelect.onchange = function(e) {
+		 testDate.setFullYear(yearSelect.options[yearSelect.selectedIndex].text);
+		 updateInterface(testDate);
+	     }
+
+	     var intlSelect = insertElement('select', header, null, [['id', 'selectIntl']]);
+	     intlSelect.onchange = function(e) {
+		 currentIntl = intls[intlSelect.selectedIndex][1];
+		 updateInterface(testDate);
+	     }
+
+	     /* https://stackoverflow.com/a/27013409 */
+	     function parseISOString(s) {
+		 var b = s.split(/\D+/);
+		 return new Date(Date.UTC(b[0], --b[1], b[2]));
+	     }
+
+	     function drawCalendarYear() {
+		 main.innerHTML = "";
+
+		 var year = insertElement('time', main, null, [['class', 'year'], ['datetime', testDate.getFullYear()]]);
+
+		 for (i=0 ; i < months; i++) {
+
+		     var month = insertElement('time', year, null, [['class', 'month'], ['datetime', testDate.getFullYear() + '-' + String(i).padStart(2, '0')]]);
+		     var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(testDate.getFullYear(), i));
+		     var monthHeader = insertElement('a', month, monthName, [['class', 'monthHeader'], ['id', monthName], ['href', '#' + monthName]]);
+
+		     for (j=1 ; j <= daysInMonth(i, testDate.getFullYear()); j++) {
+
+			 var currentDay = testDate.getDate();
+
+			 var theDate = new Date(testDate.getFullYear(), i, j);
+			 var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
+			 var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
+			 var textContent = `${String(j).padStart(2, '0')} ${weekDayName}`;
+
+			 if ( j === testDate.getDate() && i === testDate.getMonth()) {
+			     var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+			 } else if (theDate.getDay() === 6 || theDate.getDay() === 0) {
+			     var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day weekend`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+			 } else {
+			     var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+			 }
+			 day.onclick = function(e) {
+			     testDate = parseISOString(this.getAttribute('datetime'));
+			     updateInterface(testDate);
+			 }
+		     }
+		 }
+	     }
+
+	     function drawCalendarMonth() {
+		 main.innerHTML = "";
+
+		 var currentYear = testDate.getFullYear();
+		 var currentMonth = testDate.getMonth();
+		 var currentDay = testDate.getDate();
+
+		 var month = insertElement('time', main, null, [['class', 'monthonly'], ['datetime', currentYear  + '-' + currentMonth]]);
+
+		 var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(testDate.getFullYear(), i));
+		 var monthHeader = insertElement('span', month, monthName, [['class', 'monthHeader']]);
+
+		 for (i=1 ; i <= daysInMonth(currentMonth, currentYear); i++) {
+
+		     var theDate = new Date(currentYear, currentMonth, i);
+		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
+		     var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
+		     var textContent = `${String(i).padStart(2, '0')} ${weekDayName}`;
+
+		     if ( i === currentDay) {
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0')]]);
+		     } else if (theDate.getDay() === 6 || theDate.getDay() === 0) {
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day weekend`], ['datetime', currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0')]]);
+		     } else {
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0')]]);
 		     }
 		     day.onclick = function(e) {
 			 testDate = parseISOString(this.getAttribute('datetime'));
@@ -227,23 +262,32 @@
 		     }
 		 }
 	     }
-	 }
 
-	 function updateTodayInCalendar() {
-	     /* TODO: instead of re-generating the calendar outright
-		for setting 'day' and 'today' classes, only replace it in
-		the affected cells via date parsing */
-	 }
+	     function updateTodayInCalendar(newDate) {
+		 /* TODO: instead of re-generating the calendar outright
+		    for setting 'day' and 'today' classes, only replace it in
+		    the affected cells via date parsing */
+		 var allTimes = main.getElementsByTagName('time');
+		 /* var oldDatetime = `${oldDate.getFullYear()}-${oldDate.getMonth()}-${oldDate.getDate()}`; */
+		 var newDatetime = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
 
-	 var daysInYear = 365.24;
-	 var agreedWeeksInYear = 60;
-	 var daysInWeek = parseInt(daysInYear / agreedWeeksInYear);
+		 /* console.log(`oldDatetime: ${oldDatetime}, newDatetime: ${newDatetime}`); */
 
-	 /* TODO: implement e.g.
-	    var foo = main.insertElement('foo'); */
-	 var main = insertElement('main');
+		 for (let thisTag of allTimes) {
+		     if (thisTag.getAttribute('datetime') === newDatetime) {
+			 thisTag.classList.add('today');
+		     }
+		 }
+	     }
 
-	 updateInterface();
+	     /* TODO: implement e.g.
+		var foo = main.insertElement('foo'); */
+	     var main = insertElement('main');
+
+	     init();
+	     updateInterface();
+
+	 })
 
 	</script>
     </body>
