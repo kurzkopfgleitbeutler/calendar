@@ -152,13 +152,12 @@
 			 var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
 			 var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
 			 var textContent = `${String(j).padStart(2, '0')} ${weekDayName}`;
+			 var testDateString = testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0');
 
 			 if ( j === testDate.getDate() && i === testDate.getMonth()) {
-			     var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
-			 } else if (theDate.getDay() === 6 || theDate.getDay() === 0) {
-			     var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day weekend`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+			     var day = insertElement('time', month, textContent, [['id', testDateString], ['class', `${weekDayClass} today`], ['datetime', testDateString]]);
 			 } else {
-			     var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0')]]);
+			     var day = insertElement('time', month, textContent, [['id', testDateString], ['class', `${weekDayClass} day`], ['datetime', testDateString]]);
 			 }
 			 day.onclick = function(e) {
 			     testDate = parseISOString(this.getAttribute('datetime'));
@@ -186,13 +185,12 @@
 		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
 		     var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
 		     var textContent = `${String(i).padStart(2, '0')} ${weekDayName}`;
+		     var testDateString = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
 
-		     if ( i === currentDay) {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0')]]);
-		     } else if (theDate.getDay() === 6 || theDate.getDay() === 0) {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day weekend`], ['datetime', currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0')]]);
+		     if ( i === currentDay ) {
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', testDateString]]);
 		     } else {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0')]]);
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', testDateString]]);
 		     }
 		     day.onclick = function(e) {
 			 testDate = parseISOString(this.getAttribute('datetime'));
