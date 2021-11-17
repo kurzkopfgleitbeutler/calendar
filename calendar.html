@@ -108,20 +108,6 @@
 		 style.sheet.insertRule(rulestring);
 	     }
 
-	     function updateInterface(newDate) {
-		 title.textContent = `Calendar for ${testDate.getFullYear()}`;
-		 /* testDateDisplay.textContent = testDate.toDateString(); */
-		 /* setDayPicker(); */
-		 /* setMonthPicker(); */
-		 setYearPicker();
-		 setIntlPicker();
-		 /* updateTodayInCalendar(newDate); */
-		 drawCalendarYear();
-		 /* drawCalendarMonth(); */
-		 /* console.log(`new Intl: ${currentIntl}`); */
-		 /* console.log(`new Date: ${testDate.toDateString()}`); */
-	     }
-
 	     function parseISOString(s) {
 		 /* https://stackoverflow.com/a/27013409 */
 		 var b = s.split(/\D+/);
@@ -197,6 +183,20 @@
 			 updateInterface();
 		     }
 		 }
+	     }
+
+	     function updateInterface(newDate) {
+		 title.textContent = `Calendar for ${testDate.getFullYear()}`;
+		 /* testDateDisplay.textContent = testDate.toDateString(); */
+		 /* setDayPicker(); */
+		 /* setMonthPicker(); */
+		 setYearPicker();
+		 setIntlPicker();
+		 updateTodayInCalendar(newDate);
+		 /* drawCalendarYear(); */
+		 /* drawCalendarMonth(); */
+		 /* console.log(`new Intl: ${currentIntl}`); */
+		 /* console.log(`new Date: ${testDate.toDateString()}`); */
 	     }
 
 	     function updateTodayInCalendar(newDate) {
