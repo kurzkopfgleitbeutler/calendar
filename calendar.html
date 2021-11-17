@@ -212,17 +212,23 @@
 		 /* TODO: instead of re-generating the calendar outright
 		    for setting 'day' and 'today' classes, only replace it in
 		    the affected cells via date parsing */
-		 var allTimes = main.getElementsByTagName('time');
-		 /* var oldDatetime = `${oldDate.getFullYear()}-${oldDate.getMonth()}-${oldDate.getDate()}`; */
-		 var newDatetime = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
 
-		 /* console.log(`oldDatetime: ${oldDatetime}, newDatetime: ${newDatetime}`); */
+		 /* var allTimes = main.getElementsByTagName('time');
 
-		 for (let thisTag of allTimes) {
-		     if (thisTag.getAttribute('datetime') === newDatetime) {
-			 thisTag.classList.add('today');
-		     }
-		 }
+		    var oldDatetime = `${oldDate.getFullYear()}-${oldDate.getMonth()}-${oldDate.getDate()}`;
+		    var newDatetime = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
+
+		    console.log(`oldDatetime: ${oldDatetime}, newDatetime: ${newDatetime}`);
+
+		    for (let thisTag of allTimes) {
+		    if (thisTag.getAttribute('datetime') === newDatetime) {
+		    thisTag.classList.add('today');
+		    }
+		    } */
+
+		 document.getElementById(parseDateToISOString(testDate)).classList.replace('today', 'day');
+
+		 document.getElementById(parseDateToISOString(newDate)).classList.replace('day', 'today');
 	     }
 
 	     /* ================ MAIN ================ */
@@ -297,7 +303,8 @@
 	     var main = insertElement('main');
 
 	     drawCalendarYear();
-	     updateInterface();
+
+	     updateInterface(testDate);
 
 	 })
 
