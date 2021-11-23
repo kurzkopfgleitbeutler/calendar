@@ -358,56 +358,69 @@
 	     var body = document.querySelector('body');
 	     var header = insertElement('header');
 
-	     var testBtnToday = insertElement('button', header, 'Today', [['id', 'todayBtn']]);
+	     var ctrlBtns = insertElement('div', header, null, [['id', 'ctrlBtns']]);
+
+	     var testBtnToday = insertElement('button', ctrlBtns, 'Today', [['id', 'todayBtn']]);
 	     testBtnToday.onclick = function(e) {
-		 testDate = new Date();
-		 updateInterface(testDate);
+		 updateDate(new Date());
 	     }
 
-	     /* var testBtnPrev = insertElement('button', header, 'Previous', [['id', 'prevBtn']]);
+	     /* var testBtnPrev = insertElement('button', ctrlBtns, 'Previous', [['id', 'prevBtn']]);
 		testBtnPrev.onclick = function(e) {
-		testDate.setDate(testDate.getDate() - 1);
-		updateInterface(testDate);
+		dateCurrent.setDate(dateCurrent.getDate() - 1);
+		updateInterface();
 		}
 
-		var testBtnNext = insertElement('button', header, 'Next', [['id', 'nextBtn']]);
+		var testBtnNext = insertElement('button', ctrlBtns, 'Next', [['id', 'nextBtn']]);
 		testBtnNext.onclick = function(e) {
-		testDate.setDate(testDate.getDate() + 1);
-		updateInterface(testDate);
+		dateCurrent.setDate(dateCurrent.getDate() + 1);
+		updateInterface();
 		}
 
-		var daySelect = insertElement('select', header, null, [['id', 'selectDay']]);
+		var daySelect = insertElement('select', ctrlBtns, null, [['id', 'selectDay']]);
 		daySelect.onchange = function(e) {
-		testDate.setDate(daySelect.options[daySelect.selectedIndex].text);
-		updateInterface(testDate);
+		dateCurrent.setDate(daySelect.options[daySelect.selectedIndex].text);
+		updateInterface();
 		}
 
-		var monthSelect = insertElement('select', header, null, [['id', 'selectMonth']]);
-	    	monthSelect.onchange = function(e) {
-		testDate.setMonth(monthSelect.selectedIndex);
-		updateInterface(testDate);
+		var monthSelect = insertElement('select', ctrlBtns, null, [['id', 'selectMonth']]);
+		monthSelect.onchange = function(e) {
+		dateCurrent.setMonth(monthSelect.selectedIndex);
+		updateInterface();
 		}
 	      */
-	     var yearSelect = insertElement('select', header, null, [['id', 'selectYear']]);
+	     var yearSelect = insertElement('select', ctrlBtns, null, [['id', 'selectYear']]);
 	     yearSelect.onchange = function(e) {
-		 testDate.setFullYear(yearSelect.options[yearSelect.selectedIndex].text);
-		 updateInterface(testDate);
+		 calStat.currentDate.setFullYear(yearSelect.options[yearSelect.selectedIndex].text);
+		 /* drawCalendarYear(yearSelect.options[yearSelect.selectedIndex].text); */
+		 drawCalendarYear();
+		 updateTodayInCalendar();
+		 updateInterface();
 	     }
 
-	     var intlSelect = insertElement('select', header, null, [['id', 'selectIntl']]);
+	     var intlSelect = insertElement('select', ctrlBtns, null, [['id', 'selectIntl']]);
 	     intlSelect.onchange = function(e) {
-		 currentIntl = intls[intlSelect.selectedIndex][1];
-		 updateInterface(testDate);
+		 updateIntl(calStat.intls[intlSelect.selectedIndex][1]);
 	     }
 
+	     var dateLog = insertElement('div', header, null, [['id', 'datelog']]);
+
+	     var calPick = insertElement('select', header);
+	     calPick.onchange = function(e) {
+		 calStat.layout = 'Year';
+		 updateInterface();
+	     }
 
 	     /* TODO: implement e.g.
 		var foo = main.insertElement('foo'); */
 	     var main = insertElement('main');
 
 	     drawCalendarYear();
+	     updateTodayInCalendar();
 
-	     updateInterface(testDate);
+	     drawIntlPicker();
+
+	     updateInterface();
 
 	 })
 
