@@ -86,8 +86,6 @@
 		 return elem;
 	     }
 
-	     function daysInMonth(month, year) {
-		 /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
 	     function pad(s) {
 		 return String(s).padStart(2, '0');
 	     }
@@ -112,34 +110,27 @@
 		 return new Date(year, month + 1, 0).getDate();
 	     }
 
-	     function setDayPicker() {
+	     function drawDatePicker() {
 		 daySelect.innerHTML = "";
-		 for (i = 1 ; i <= daysInMonth(testDate.getMonth(), testDate.getYear()) ; i++) {
-		     if (i === testDate.getDate()) {
-			 insertElement('option', daySelect, i, [['value', i], ['selected']]);
-		     } else {
-			 insertElement('option', daySelect, i, [['value', i]]);
-		     }
+		 for (i = 1 ; i <= daysInMonth(calStat.currentDate.getMonth(), calStat.currentDate.getYear()) ; i++) {
+		     insertElement('option', daySelect, i, [['value', i]]);
 		 }
 	     }
 
-	     function setMonthPicker() {
+	     function drawMonthPicker() {
 		 logFunCall(3);
 		 monthSelect.innerHTML = "";
 		 for (i = 1 ; i <= 12 ; i++) {
-		     if (i === testDate.getMonth() + 1) {
-			 insertElement('option', monthSelect, i, [['value', i], ['selected']]);
-		     } else {
-			 insertElement('option', monthSelect, i, [['value', i]]);
-		     }
+		     insertElement('option', monthSelect, i, [['value', i]]);
 		 }
 	     }
 
-	     function setYearPicker() {
+	     /* TODO: create year input field with two small up down buttons as replacement */
+	     function drawYearPicker() {
 		 logFunCall(3);
 		 yearSelect.innerHTML = "";
-		 for (i = testDate.getFullYear() - 101 ; i < testDate.getFullYear() + 101 ; i++) {
-		     if (i === testDate.getFullYear()) {
+		 for (i = calStat.currentDate.getFullYear() - 101 ; i < calStat.currentDate.getFullYear() + 101 ; i++) {
+		     if (i === calStat.currentDate.getFullYear()) {
 			 insertElement('option', yearSelect, i, [['value', i], ['selected']]);
 		     } else {
 			 insertElement('option', yearSelect, i, [['value', i]]);
@@ -180,54 +171,30 @@
 		 style.sheet.insertRule(rulestring);
 	     }
 
-	     function parseISOString(s) {
-		 /* https://stackoverflow.com/a/27013409 */
-		 var b = s.split(/\D+/);
-		 return new Date(Date.UTC(b[0], --b[1], b[2]));
-	     }
-
-	     function parseDateToISOString(d) {
-		 return new String(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'));
-
-	     }
-
-	     function drawCalendarYear() {
+	     function drawCalendarYear(y = calStat.currentDate.getFullYear()) {
 		 logFunCall(4);
 		 main.innerHTML = "";
 
-		 var year = insertElement('time', main, null, [['class', 'year'], ['datetime', testDate.getFullYear()]]);
+		 var year = insertElement('time', main, null, [['class', 'year'], ['datetime', y]]);
 
-		 for (i=0 ; i < months; i++) {
+		 for ( m = 0 ; m < 12; m++ ) {
 
-		     var month = insertElement('time', year, null, [['class', 'month'], ['datetime', testDate.getFullYear() + '-' + String(i).padStart(2, '0')]]);
-		     var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(testDate.getFullYear(), i));
+		     var month = insertElement('time', year, null, [['class', 'month'], ['datetime', y + '-' + pad(m)]]);
+		     var monthName = new Intl.DateTimeFormat(calStat.currentIntl, { month: 'long' }).format(new Date(y, m));
 		     var monthHeader = insertElement('a', month, monthName, [['class', 'monthHeader'], ['id', monthName], ['href', '#' + monthName]]);
 
-		     for (j=1 ; j <= daysInMonth(i, testDate.getFullYear()); j++) {
+		     for ( d = 1 ; d <= daysInMonth(m, y) ; d++ ) {
 
-			 var currentDay = testDate.getDate();
-
-			 var theDate = new Date(testDate.getFullYear(), i, j);
-			 var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
+			 var theDate = new Date(y, m, d);
+			 var weekDayName = new Intl.DateTimeFormat(calStat.currentIntl, { weekday: 'short' }).format(theDate);
 			 var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
-			 var textContent = `${String(j).padStart(2, '0')} ${weekDayName}`;
-			 var testDateString = testDate.getFullYear() + '-' + String(i + 1).padStart(2, '0') + '-' + String(j).padStart(2, '0');
+			 var textContent = pad(d) + ' ' + weekDayName;
+			 var dateCurrentString = y + '-' + pad(m + 1) + '-' + pad(d);
 
-			 if ( j === testDate.getDate() && i === testDate.getMonth()) {
-			     var day = insertElement('time', month, textContent, [['id', testDateString], ['class', `${weekDayClass} today`], ['datetime', testDateString]]);
-			 } else {
-			     var day = insertElement('time', month, textContent, [['id', testDateString], ['class', `${weekDayClass} day`], ['datetime', testDateString]]);
-			 }
+			 var day = insertElement('time', month, textContent, [['id', dateCurrentString], ['class', `${weekDayClass} day`], ['datetime', dateCurrentString]]);
+
 			 day.onclick = function(e) {
-			     /* TODO: eigene Funktion, die altes und
-			     neues Datum berechnet, oder updated, oder
-			     so? oder updateInterface kriegt altes und
-				neues Datum, aber das Datum ist ja kein
-				Interface sondern Backend? */
-			     console.log(testDate);
-			     testDate = parseISOString(this.getAttribute('datetime'));
-			     console.log(testDate);
-			     updateInterface(testDate);
+			     updateDate(parseISOString(this.getAttribute('datetime')));
 			 }
 		     }
 		 }
@@ -237,13 +204,13 @@
 		 logFunCall(4);
 		 main.innerHTML = "";
 
-		 var currentYear = testDate.getFullYear();
-		 var currentMonth = testDate.getMonth();
-		 var currentDay = testDate.getDate();
+		 var currentYear = dateCurrent.getFullYear();
+		 var currentMonth = dateCurrent.getMonth();
+		 var currentDay = dateCurrent.getDate();
 
 		 var month = insertElement('time', main, null, [['class', 'monthonly'], ['datetime', currentYear  + '-' + currentMonth]]);
 
-		 var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(testDate.getFullYear(), i));
+		 var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(dateCurrent.getFullYear(), i));
 		 var monthHeader = insertElement('span', month, monthName, [['class', 'monthHeader']]);
 
 		 for (i=1 ; i <= daysInMonth(currentMonth, currentYear); i++) {
@@ -252,56 +219,72 @@
 		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
 		     var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
 		     var textContent = `${String(i).padStart(2, '0')} ${weekDayName}`;
-		     var testDateString = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
+		     var dateCurrentString = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
 
 		     if ( i === currentDay ) {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', testDateString]]);
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', dateCurrentString]]);
 		     } else {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', testDateString]]);
+			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', dateCurrentString]]);
 		     }
 		     day.onclick = function(e) {
-			 console.log(testDate);
-			 testDate = parseISOString(this.getAttribute('datetime'));
-			 console.log(testDate);
+			 console.log(dateCurrent);
+			 dateCurrent = parseISOString(this.getAttribute('datetime'));
+			 console.log(dateCurrent);
 			 updateInterface();
 		     }
 		 }
 	     }
 
-	     function updateInterface(newDate) {
-		 title.textContent = `Calendar for ${testDate.getFullYear()}`;
-		 /* testDateDisplay.textContent = testDate.toDateString(); */
-		 /* setDayPicker(); */
-		 /* setMonthPicker(); */
-		 setYearPicker();
-		 setIntlPicker();
-		 updateTodayInCalendar(newDate);
-		 /* drawCalendarYear(); */
-		 /* drawCalendarMonth(); */
-		 /* console.log(`new Intl: ${currentIntl}`); */
-		 /* console.log(`new Date: ${testDate.toDateString()}`); */
+	     function updateDate(newDate) {
 		 logFunCall(1);
+		 if (parseDate(newDate) == parseDate(calStat.currentDate)) {
+		     return;
+		 }
+		 calStat.lastDate = calStat.currentDate;
+		 calStat.currentDate = newDate;
+		 /* localStorage.setItem('calStat', calStat); */
+
+		 logDates();
+
+		 if(calStat.lastDate.getFullYear() != calStat.currentDate.getFullYear()) {
+		     drawCalendarYear();
+		 }
+		 updateTodayInCalendar();
+		 updateInterface();
 	     }
 
-	     function updateTodayInCalendar(newDate) {
-		 /* TODO: instead of re-generating the calendar outright
-		    for setting 'day' and 'today' classes, only replace it in
-		    the affected cells via date parsing */
+	     function logDates() {
 		 logFunCall(2);
+		 var idString = parseDate(calStat.lastDate);
 
-		 /* var allTimes = main.getElementsByTagName('time');
+		 /* console.log(`date log: ${parseDate(calStat.lastDate)}`); */
 
-		    var oldDatetime = `${oldDate.getFullYear()}-${oldDate.getMonth()}-${oldDate.getDate()}`;
-		    var newDatetime = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
+		 /* var btnPrevDate = insertElement('button', dateLog, formatDate(calStat.lastDate, { weekday: 'short', day: 'numeric', month: 'numeric', year: '2-digit' }), [['class', idString], ['type', 'button']]); */
+		 var btnPrevDate = insertElement('button', dateLog, idString, [['class', idString], ['type', 'button']]);
+		 btnPrevDate.onclick = function(e) {
+		     updateDate(parseISOString(btnPrevDate.classList[0]));
+		 }
 
-		    console.log(`oldDatetime: ${oldDatetime}, newDatetime: ${newDatetime}`);
+		 if (dateLog.children.length > 2) {
+		     dateLog.firstChild.remove();
+		 }
+	     }
+
+	     function updateTodayInCalendar() {
 		 logFunCall(2);
+		 /* console.log(`got ${parseDate(oldDate)},\n    ${parseDate(newDate)}`); */
+		 /* console.log(calStat.lastDate + ' -> ' + calStat.currentDate); */
+		 /* console.log(parseDate(calStat.lastDate) + ' -> ' + parseDate(calStat.currentDate)); */
+		 const lastDate = document.getElementById(parseDate(calStat.lastDate));
+		 const currentDate = document.getElementById(parseDate(calStat.currentDate));
+		 if (lastDate) {
+		     lastDate.classList.replace('today', 'day');
+		 }
+		 if (currentDate) {
+		     currentDate.classList.replace('day', 'today');
+		 }
+	     }
 
-		    for (let thisTag of allTimes) {
-		    if (thisTag.getAttribute('datetime') === newDatetime) {
-		    thisTag.classList.add('today');
-		    }
-		    } */
 	     function updateIntl(newIntl) {
 		 logFunCall(1);
 		 if (newIntl == calStat.currentIntl) {
@@ -330,22 +313,46 @@
 		 }
 	     }
 
-		 document.getElementById(parseDateToISOString(newDate)).classList.replace('day', 'today');
+	     function updateInterface() {
 		 logFunCall(2);
+		 title.textContent = `Calendar for ${calStat.currentDate.getFullYear()}`;
+		 /* dateCurrentDisplay.textContent = dateCurrent.toDateString(); */
+		 /* drawDatePicker(); */
+		 /* drawMonthPicker(); */
+		 drawYearPicker();
+		 updateIntlPicker();
+		 drawLayoutPicker();
+		 /* updateTodayInCalendar(); */
+		 /* drawCalendarYear(); */
+		 /* drawCalendarMonth(); */
+		 /* console.log(`Intl: ${calStat.currentIntl}`); */
+		 /* console.log(`new Date: ${calStat.currentDate.toDateString()}`); */
+		 callCount();
 	     }
 
-	     /* ================ MAIN ================ */
-	     var title = insertElement('title', 'head', `Calendar for ${testDate.getFullYear()}`);
-	     /* https://attacomsian.com/blog/javascript-set-css-styles#constructable-stylesheets */
+
+	     /* ==================================== MAIN ==================================== */
+
+
+	     var title = insertElement('title', 'head', `Calendar for ${calStat.currentDate.getFullYear()}`);
+	     /* TODO: constructable stylesheets are not yet
+	     implemented, use them when available
+		https://attacomsian.com/blog/javascript-set-css-styles#constructable-stylesheets */
 	     var style = insertElement('style', 'head');
+
+	     /* https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties */
+	     style.sheet.insertRule(`:root {  }`);
 	     style.sheet.insertRule(`* { box-sizing: border-box; }`);
 	     style.sheet.insertRule(`html, body { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 14; }`);
-	     style.sheet.insertRule(`header { height: 3em; max-height: 3em; display: grid; grid-template-columns: repeat(7, 1fr); width: 100%; position: fixed; }`);
+	     style.sheet.insertRule(`header    { height: 3em; max-height: 3em; display: inline-grid; grid-template-columns: 3fr 2fr 1fr; width: 100%; }`);
+	     style.sheet.insertRule(`#ctrlBtns {                               display: inline-grid; grid-template-columns: repeat(3, 1fr); width: 100%; }`);
+	     style.sheet.insertRule(`#datelog  {                               display: inline-grid; grid-template-columns: repeat(2, 1fr); width: 100%; }`);
+	     style.sheet.insertRule(`#calPick  {                               display: inline-grid; grid-template-columns: repeat(1, 1fr); width: 100%; }`);
 	     style.sheet.insertRule(`time { padding-top: 0.2em; padding-bottom: 1em; }`);
-	     style.sheet.insertRule(`@media screen and (max-width: 500px) { .year { display: flex; flex-direction: column; } }`);
-	     style.sheet.insertRule(`@media screen and (min-width: 500px) and (max-width: 800px) { .year { display: grid; grid-template-columns: repeat(${months / 2}, 1fr); } }`);
-	     style.sheet.insertRule(`@media screen and (min-width: 800px) { .year { display: grid; grid-template-columns: repeat(${months}, 1fr); } }`);
-	     style.sheet.insertRule(`.year { padding-top: 3em; }`);
+	     style.sheet.insertRule(`@media screen and (max-width: 500px)                        { .year { display: flex; flex-direction: column; } }`);
+	     style.sheet.insertRule(`@media screen and (min-width: 500px) and (max-width: 800px) { .year { display: grid; grid-template-columns: repeat(${12 / 2}, 1fr); } }`);
+	     style.sheet.insertRule(`@media screen and (min-width: 800px)                        { .year { display: grid; grid-template-columns: repeat(${12}, 1fr); } }`);
+	     style.sheet.insertRule(`.year { }`);
 	     style.sheet.insertRule(`.month { display: flex; flex-direction: column; }`);
 	     style.sheet.insertRule(`.monthHeader { border-bottom: 2px solid #bbb; text-decoration: none; color: #000; }`);
 	     style.sheet.insertRule(`.day { border-bottom: 1px solid #ddd; font-size: 10; }`);
