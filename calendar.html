@@ -88,6 +88,27 @@
 
 	     function daysInMonth(month, year) {
 		 /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
+	     function pad(s) {
+		 return String(s).padStart(2, '0');
+	     }
+
+	     function parseISOString(s) {
+		 /* https://stackoverflow.com/a/27013409 */
+		 var b = s.split(/\D+/);
+		 return new Date(Date.UTC(b[0], --b[1], b[2]));
+	     }
+
+	     function parseDate(d) {
+		 /* return new String(d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')); */
+		 return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+	     }
+
+	     function formatDate(theIntl = calStat.currentIntl, format = { weekday: 'short' }, d = calStat.currentDate) {
+		 return new Intl.DateTimeFormat(theIntl, format).format(d);
+	     }
+
+		 function daysInMonth(month, year) {
+		     /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
 		 return new Date(year, month + 1, 0).getDate();
 	     }
 
