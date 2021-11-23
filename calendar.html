@@ -23,7 +23,35 @@
 
 
 	     /* ================ FUNCTIONS ================ */
+	     let debug = 4;
+
+	     let funCallCounter = 0;
+	     let callCounter = 0;
+
+	     function logFunCall(level) {
+		 /* https://stackoverflow.com/questions/103598/why-was-the-arguments-callee-caller-property-deprecated-in-javascript/1335595#1335595 */
+		 funCallCounter += 1;
+		 let caller = logFunCall.caller.name;
+		 if (typeof debug === 'number') {
+		     if (debug >= level) {
+			 console.log('funCall ' + level + ': ' + caller);
+		     }
+		 } else if (typeof debug === 'string') {
+		     let regex = new RegExp('.*' + debug + '.*', 'i');
+		     if (caller.match(regex)) {
+			 console.log('funCall ' + level + ': ' + caller)
+		     }
+		 }
+	     }
+
+	     function callCount() {
+		 callCounter += 1;
+		 console.log('========== CALL ' + callCounter + ' END == FUNCTIONS CALLED: ' + funCallCounter + ' ==========');
+		 funCallCounter = 0;
+	     }
+
 	     function insertElement(type, target = body, textcontent, attributes) {
+		 logFunCall(5);
 		 var elem = document.createElement(type);
 		 if(textcontent) {
 		     elem.textContent = textcontent;
@@ -62,6 +90,7 @@
 	     }
 
 	     function setMonthPicker() {
+		 logFunCall(3);
 		 monthSelect.innerHTML = "";
 		 for (i = 1 ; i <= 12 ; i++) {
 		     if (i === testDate.getMonth() + 1) {
@@ -73,6 +102,7 @@
 	     }
 
 	     function setYearPicker() {
+		 logFunCall(3);
 		 yearSelect.innerHTML = "";
 		 for (i = testDate.getFullYear() - 101 ; i < testDate.getFullYear() + 101 ; i++) {
 		     if (i === testDate.getFullYear()) {
@@ -84,6 +114,7 @@
 	     }
 
 	     function setIntlPicker() {
+		 logFunCall(3);
 		 intlSelect.innerHTML = "";
 		 for (i = 0 ; i < intls.length ; i++) {
 		     if (intls[i][1] === currentIntl) {
@@ -94,6 +125,7 @@
 		 }
 	     }
 
+		 logFunCall(3);
 	     function setCalendarLayout(selector, rulestring) {
 		 /* TODO: delete style for smaller screens, add for
 		    larger, and vice versa, instead of defining by screen
@@ -119,6 +151,7 @@
 	     }
 
 	     function drawCalendarYear() {
+		 logFunCall(4);
 		 main.innerHTML = "";
 
 		 var year = insertElement('time', main, null, [['class', 'year'], ['datetime', testDate.getFullYear()]]);
@@ -160,6 +193,7 @@
 	     }
 
 	     function drawCalendarMonth() {
+		 logFunCall(4);
 		 main.innerHTML = "";
 
 		 var currentYear = testDate.getFullYear();
@@ -205,12 +239,14 @@
 		 /* drawCalendarMonth(); */
 		 /* console.log(`new Intl: ${currentIntl}`); */
 		 /* console.log(`new Date: ${testDate.toDateString()}`); */
+		 logFunCall(1);
 	     }
 
 	     function updateTodayInCalendar(newDate) {
 		 /* TODO: instead of re-generating the calendar outright
 		    for setting 'day' and 'today' classes, only replace it in
 		    the affected cells via date parsing */
+		 logFunCall(2);
 
 		 /* var allTimes = main.getElementsByTagName('time');
 
@@ -218,16 +254,20 @@
 		    var newDatetime = `${newDate.getFullYear()}-${newDate.getMonth()}-${newDate.getDate()}`;
 
 		    console.log(`oldDatetime: ${oldDatetime}, newDatetime: ${newDatetime}`);
+		 logFunCall(2);
 
 		    for (let thisTag of allTimes) {
 		    if (thisTag.getAttribute('datetime') === newDatetime) {
 		    thisTag.classList.add('today');
 		    }
 		    } */
+		 logFunCall(1);
 
 		 document.getElementById(parseDateToISOString(testDate)).classList.replace('today', 'day');
+		 logFunCall(3);
 
 		 document.getElementById(parseDateToISOString(newDate)).classList.replace('day', 'today');
+		 logFunCall(2);
 	     }
 
 	     /* ================ MAIN ================ */
