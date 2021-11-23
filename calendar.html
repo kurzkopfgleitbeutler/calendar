@@ -147,19 +147,26 @@
 		 }
 	     }
 
-	     function setIntlPicker() {
+	     function drawIntlPicker() {
 		 logFunCall(3);
 		 intlSelect.innerHTML = "";
-		 for (i = 0 ; i < intls.length ; i++) {
-		     if (intls[i][1] === currentIntl) {
-			 insertElement('option', intlSelect, intls[i][0], [['value', i], ['selected']]);
+		 for (i = 0 ; i < calStat.intls.length ; i++) {
+		     if (calStat.currentIntl === calStat.intls[i][1]) {
+			 insertElement('option', intlSelect, calStat.intls[i][0], [['id', calStat.intls[i][1]], ['value', i], ['selected']]);
 		     } else {
-			 insertElement('option', intlSelect, intls[i][0], [['value', i]]);
+			 insertElement('option', intlSelect, calStat.intls[i][0], [['id', calStat.intls[i][1]], ['value', i]]);
 		     }
 		 }
 	     }
 
+	     function drawLayoutPicker() {
 		 logFunCall(3);
+		 calPick.innerHTML = "";
+		 for ( i = 0 ; i < calStat.layouts.length ; i++ ) {
+		     insertElement('option', calPick, calStat.layouts[i], [['value', i]]);
+		 }
+	     }
+
 	     function setCalendarLayout(selector, rulestring) {
 		 /* TODO: delete style for smaller screens, add for
 		    larger, and vice versa, instead of defining by screen
@@ -295,10 +302,33 @@
 		    thisTag.classList.add('today');
 		    }
 		    } */
+	     function updateIntl(newIntl) {
 		 logFunCall(1);
+		 if (newIntl == calStat.currentIntl) {
+		     return;
+		 }
+		 calStat.lastIntl = calStat.currentIntl;
+		 /* calStat.currentIntl = calStat.intls[intlSelect.selectedIndex][1]; */
+		 calStat.currentIntl = newIntl;
 
-		 document.getElementById(parseDateToISOString(testDate)).classList.replace('today', 'day');
+		 /* console.log(calStat.lastIntl, calStat.currentIntl); */
+		 updateIntlPicker();
+		 drawCalendarYear();
+		 updateTodayInCalendar();
+		 updateInterface();
+	     }
+
+	     function updateIntlPicker() {
 		 logFunCall(3);
+		 const lastIntl = document.getElementById(calStat.lastIntl);
+		 const currentIntl = document.getElementById(calStat.currentIntl);
+		 if (lastIntl) {
+		     lastIntl.classList.remove('selected');
+		 }
+		 if (currentIntl) {
+		     currentIntl.classList.add('selected');
+		 }
+	     }
 
 		 document.getElementById(parseDateToISOString(newDate)).classList.replace('day', 'today');
 		 logFunCall(2);
