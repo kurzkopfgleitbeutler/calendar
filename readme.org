@@ -1,0 +1,8 @@
+#+Time-stamp: <2021-11-24T18:10:55>
+#+title: single-file interactive calendar (sfic)
+#+options: num:nil author:nil ^:t
+#+language: en
+
+goal: learn basic programming skills
+
+restriction: one single file

@@ -7,6 +7,7 @@
 
 !.gitignore
 
+!readme.org
 !calendar.html
 
 # ...even if they are in subdirectories
