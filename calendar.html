@@ -20,8 +20,8 @@
 	     let callCounter = 0;
 
 	     /* TODO: since localStorage is not defined for file://
-	     protocol, implementing it doesn't make sense at this
-	     stage */
+		protocol, implementing it doesn't make sense at this
+		stage */
 	     const calStat = {
 		 currentDate: new Date(),
 		 lastDate: new Date(),
@@ -105,8 +105,8 @@
 		 return new Intl.DateTimeFormat(theIntl, format).format(d);
 	     }
 
-		 function daysInMonth(month, year) {
-		     /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
+	     function daysInMonth(month, year) {
+		 /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
 		 return new Date(year, month + 1, 0).getDate();
 	     }
 
@@ -336,7 +336,7 @@
 
 	     var title = insertElement('title', 'head', `Calendar for ${calStat.currentDate.getFullYear()}`);
 	     /* TODO: constructable stylesheets are not yet
-	     implemented, use them when available
+		implemented, use them when available
 		https://attacomsian.com/blog/javascript-set-css-styles#constructable-stylesheets */
 	     var style = insertElement('style', 'head');
 
