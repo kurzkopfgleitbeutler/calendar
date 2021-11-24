@@ -179,7 +179,7 @@
 
 		 for ( m = 0 ; m < 12; m++ ) {
 
-		     var month = insertElement('time', year, null, [['class', 'month'], ['datetime', y + '-' + pad(m)]]);
+		     var month = insertElement('time', year, null, [['class', 'month'], ['datetime', y + '-' + pad(m + 1)]]);
 		     var monthName = new Intl.DateTimeFormat(calStat.currentIntl, { month: 'long' }).format(new Date(y, m));
 		     var monthHeader = insertElement('a', month, monthName, [['class', 'monthHeader'], ['id', monthName], ['href', '#' + monthName]]);
 
