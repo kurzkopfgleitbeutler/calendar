@@ -47,19 +47,19 @@
 		 let caller = logFunCall.caller.name;
 		 if (typeof debug === 'number') {
 		     if (debug >= level) {
-			 console.log('funCall ' + level + ': ' + caller);
+			 console.log(`call ${level}/${debug}: ${caller}`);
 		     }
 		 } else if (typeof debug === 'string') {
 		     let regex = new RegExp('.*' + debug + '.*', 'i');
 		     if (caller.match(regex)) {
-			 console.log('funCall ' + level + ': ' + caller)
+			 console.log(`call ${debug}: ${caller}`)
 		     }
 		 }
 	     }
 
 	     function callCount() {
 		 callCounter += 1;
-		 console.log('========== CALL ' + callCounter + ' END == FUNCTIONS CALLED: ' + funCallCounter + ' ==========');
+		 console.log('========== CALL ' + callCounter + ' END ==== FUNCTIONS CALLED: ' + funCallCounter + ' ==========');
 		 funCallCounter = 0;
 	     }
 
@@ -191,7 +191,6 @@
 
 	     function createCalendarYearTree(y) {
 		 logFunCall(5);
-
 		 var year = insertElement('time', main, null, [['id', y + '_' + calStat.currentIntl], ['class', 'year'], ['datetime', y]]);
 
 		 for ( m = 0 ; m < 12; m++ ) {
