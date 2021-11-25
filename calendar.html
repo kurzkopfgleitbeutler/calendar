@@ -34,7 +34,8 @@
 		 intls: [ ['Arabic', 'ar'], ['Armenian', 'hy'], ['Chinese (Simplified)', 'zh-Hans'], ['Dutch', 'nl'], ['English', 'en-US'], ['Esperanto', 'eo'], ['Gaelic (Scottish)', 'gd'], ['German', 'de'], ['Greek', 'el'], ['Hebrew', 'he'], ['Hindi', 'hi'], ['Irish', 'ga'], ['Japanese', 'ja'], ['Korean', 'ko'], ['Malayalam', 'ml'], ['Nepali', 'ne'], ['Norwegian bokmål', 'nb'], ['Russian', 'ru'], ['Spanish', 'es'], ['Uyghur', 'ug'], ['Urdu', 'ur'], ['Welsh', 'cy'] ],
 		 currentIntl: navigator.language,
 		 lastIntl: navigator.language,
-		 yearCache: {}
+		 yearCache: {},
+		 monthCache: {}
 	     };
 
 
@@ -217,39 +218,49 @@
 		 return year;
 	     }
 
-	     function drawCalendarMonth() {
+	     function drawCalendarMonth(y = calStat.currentDate.getFullYear(), m = calStat.currentDate.getMonth()) {
 		 logFunCall(4);
-		 main.innerHTML = "";
+		 let key = y + '-' + m + '_' + calStat.currentIntl;
 
-		 var currentYear = dateCurrent.getFullYear();
-		 var currentMonth = dateCurrent.getMonth();
-		 var currentDay = dateCurrent.getDate();
+		 if (main.childNodes[0]) {
+		     main.removeChild(main.childNodes[0]);
+		 }
 
-		 var month = insertElement('time', main, null, [['class', 'monthonly'], ['datetime', currentYear  + '-' + currentMonth]]);
+		 if (Object.keys(calStat.monthCache).includes(key)) {
+		     main.appendChild(Object.entries(calStat.monthCache).find(e => e[0] === key)[1]);
+		 } else {
+		     var month = createCalendarMonthTree(y, m);
+		     calStat.monthCache[key] = month;
+		     main.appendChild(month);
+		 }
+	     }
 
-		 var monthName = new Intl.DateTimeFormat(currentIntl, { month: 'long' }).format(new Date(dateCurrent.getFullYear(), i));
+	     function createCalendarMonthTree(y, m) {
+		 logFunCall(5);
+		 /* var currentYear = dateCurrent.getFullYear();
+		    var currentMonth = dateCurrent.getMonth();
+		    var currentDay = dateCurrent.getDate(); */
+
+		 var month = insertElement('time', main, null, [['id', y + '-' + m + '_' + calStat.currentIntl], ['class', 'monthonly'], ['datetime', y  + '-' + m]]);
+
+		 var monthName = new Intl.DateTimeFormat(calStat.currentIntl, { month: 'long' }).format(new Date(y, m));
 		 var monthHeader = insertElement('span', month, monthName, [['class', 'monthHeader']]);
 
-		 for (i=1 ; i <= daysInMonth(currentMonth, currentYear); i++) {
+		 for (i=1 ; i <= daysInMonth(m, y); i++) {
 
-		     var theDate = new Date(currentYear, currentMonth, i);
-		     var weekDayName = new Intl.DateTimeFormat(currentIntl, { weekday: 'short' }).format(theDate);
+		     var theDate = new Date(y, m, i);
+		     var weekDayName = new Intl.DateTimeFormat(calStat.currentIntl, { weekday: 'short' }).format(theDate);
 		     var weekDayClass = new Intl.DateTimeFormat('en', { weekday: 'short' }).format(theDate);
 		     var textContent = `${String(i).padStart(2, '0')} ${weekDayName}`;
-		     var dateCurrentString = currentYear + '-' + String(currentMonth + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
+		     var dateCurrentString = y + '-' + pad(m + 1) + '-' + pad(i);
 
-		     if ( i === currentDay ) {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} today`], ['datetime', dateCurrentString]]);
-		     } else {
-			 var day = insertElement('time', month, textContent, [['class', `${weekDayClass} day`], ['datetime', dateCurrentString]]);
-		     }
+		     var day = insertElement('time', month, textContent, [['id', dateCurrentString], ['class', `${weekDayClass} day`], ['datetime', dateCurrentString]]);
+
 		     day.onclick = function(e) {
-			 console.log(dateCurrent);
-			 dateCurrent = parseISOString(this.getAttribute('datetime'));
-			 console.log(dateCurrent);
-			 updateInterface();
+			 updateDate(parseISOString(this.getAttribute('datetime')));
 		     }
 		 }
+		 return month;
 	     }
 
 	     function updateDate(newDate) {
@@ -380,7 +391,8 @@
 	     style.sheet.insertRule(`.Sat, .Sun { border-bottom: 1px solid #ddd; background: #eee; }`);
 	     style.sheet.insertRule(`.today { border-bottom: 1px solid #bbb; background: #ddd !important; }`);
 	     style.sheet.insertRule(`.monthonly { display: grid; grid-template-columns: repeat(7, 1fr); }`);
-	     style.sheet.insertRule(`.monthonly > :first-child { grid-column-start: 3; }`);
+	     style.sheet.insertRule(`.monthonly > :nth-child(2) { grid-column-start: ${new Date(calStat.currentDate.getFullYear(), calStat.currentDate.getMonth(), 1).getDay()}; }`);
+	     console.log(new Date(calStat.currentDate.getFullYear(), calStat.currentDate.getMonth(), 1).getDay());
 	     /* console.log(document.styleSheets[0].cssRules); */
 
 	     var body = document.querySelector('body');
