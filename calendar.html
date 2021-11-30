@@ -13,15 +13,18 @@
 
 	     /* ==================================== INIT ==================================== */
 
+	     console.clear();
+
 	     /* false/0 : no logging
 		true    : only summary
 		number  : filter log by level
 		string  : filter log by function name
 	      */
-	     let debug = true;
+	     let debug = true,
+		 logCache = false;
 
-	     let funCallCounter = 0;
-	     let callCounter = 0;
+	     let funCallCounter = 0,
+		 callCounter = 0;
 
 	     /* TODO: since localStorage is not defined for file://
 		protocol, implementing it does not make sense at this
@@ -45,6 +48,11 @@
 		 monthCache: {}
 	     };
 
+	     if ( debug ) {
+		 if ( ! debug === true ) {
+		     console.group("function calls");
+		 }
+	     }
 
 	     /* ==================================== FUNCTIONS ==================================== */
 
@@ -68,8 +76,16 @@
 	     function callCount() {
 		 if ( debug ) {
 		     callCounter += 1;
-		     console.log("========== CALL " + callCounter + " END, FUNCTIONS: " + funCallCounter + " ==========");
+		     if ( ! debug === true ) {
+			 console.groupEnd();
+		     }
+		     /* log, info, warn, error */
+		     /* console.log("========== CALL " + callCounter + " END, FUNCTIONS: " + funCallCounter + " =========="); */
+		     console.info("CALL " + callCounter + " END, FUNCTIONS: " + funCallCounter);
 		     funCallCounter = 0;
+		     if ( ! debug === true ) {
+			 console.groupCollapsed("function calls");
+		     }
 		 }
 	     }
 
@@ -422,6 +438,9 @@
 		     title.textContent = `Calendar for ${formatDate( { month: "long" } )} ${calStat.currentDate.getFullYear()}`;
 		 }
 		 headline.textContent = formatDate({ dateStyle: "full" });
+		 if ( logCache ) {
+		     console.log(calStat.yearCache, calStat.monthCache);
+		 }
 		 callCount();
 	     }
 
