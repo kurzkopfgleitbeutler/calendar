@@ -36,7 +36,7 @@
 		 layouts: ["Year", "Month"],
 		 currentLayout: localStorage.getItem("currentLayout") ?? "Year",
 
-		 gridOrList: "Grid",
+		 /* gridOrList: "Grid", */
 
 		 /* https://stackoverflow.com/a/69034315
 		    modified "en" to "en-US"
@@ -312,7 +312,7 @@
 		 var month = insertElement("time", main, null, [["id", y + "-" + m + "_" + calStat.currentIntl], ["class", "monthonly"], ["datetime", y  + "-" + m]]);
 
 		 var monthName = new Intl.DateTimeFormat(calStat.currentIntl, { month: "long" }).format(new Date(y, m));
-		 var monthHeader = insertElement("span", month, monthName, [["class", "monthHeader"]]);
+		 /* var monthHeader = insertElement("span", month, monthName, [["class", "monthHeader"]]); */
 
 		 for ( i = 1 ; i <= daysInMonth(m, y) ; i++ ) {
 
@@ -351,11 +351,11 @@
 
 	     function logDates() {
 		 logFunCall(2);
-		 var idString = parseDate(calStat.lastDate);
+		 let last = parseDate(calStat.lastDate);
 
-		 var btnPrevDate = insertElement("button", dateLog, idString, [["class", idString], ["type", "button"]]);
-		 btnPrevDate.onclick = function(e) {
-		     updateDate(parseISOString(btnPrevDate.classList[0]));
+		 let btnLastDate = insertElement("button", dateLog, last, [["class", last], ["type", "button"]]);
+		 btnLastDate.onclick = function(e) {
+		     updateDate(parseISOString(btnLastDate.classList[0]));
 		 }
 
 		 if ( dateLog.children.length > 2 ) {
