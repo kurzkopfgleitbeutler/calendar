@@ -73,15 +73,25 @@
 		     elem.textContent = textcontent;
 		 }
 		 if ( attributes ) {
-		     for ( var [attr, content] of attributes ) {
-			 if ( content ) {
-			     elem.setAttribute(attr, content);
-			 } else {
-			     elem.setAttribute(attr, "");
+		     if ( attributes.constructor === Array ) {
+			 for ( var [attr, content] of attributes ) {
+			     if ( content ) {
+				 elem.setAttribute(attr, content);
+			     } else {
+				 elem.setAttribute(attr, "");
+			     }
+			 }
+		     } else if ( attributes.constructor === Object ) {
+			 for ( var [attr, content] of Object.entries(attributes) ) {
+			     if ( content ) {
+				 elem.setAttribute(attr, content);
+			     } else {
+				 elem.setAttribute(attr, "");
+			     }
 			 }
 		     }
 		 }
-		 if ( target === 'head' ) {
+		 if ( target === "head" ) {
 		     document.head.appendChild(elem);
 		 } else {
 		     target.appendChild(elem);
