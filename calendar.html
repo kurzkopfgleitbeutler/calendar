@@ -26,15 +26,15 @@
 	     let funCallCounter = 0,
 		 callCounter = 0;
 
-	     /* TODO: since localStorage is not defined for file://
-		protocol, implementing it does not make sense at this
-		stage */
+	     /* nb: localStorage is not specified for file:// protocol
+		TODO: indexedDB for data persistence */
 	     const calStat = {
-		 currentDate: new Date(),
-		 lastDate: new Date(),
+		 currentDate: parseISOString(localStorage.getItem("currentDate")) ?? new Date(),
+		 lastDate: parseISOString(localStorage.getItem("lastDate")) ?? new Date(),
+		 nextToLastDate: parseISOString(localStorage.getItem("nextToLastDate")) ?? new Date(),
 
 		 layouts: ["Year", "Month"],
-		 currentLayout: "Year",
+		 currentLayout: localStorage.getItem("currentLayout") ?? "Year",
 
 		 gridOrList: "Grid",
 
@@ -42,8 +42,8 @@
 		    modified "en" to "en-US"
 		    allIntls: [ ["Abkhazian", "ab"], ["Afar", "aa"], ["Afrikaans", "af"], ["Akan", "ak"], ["Albanian", "sq"], ["Amharic", "am"], ["Arabic", "ar"], ["Aragonese", "an"], ["Armenian", "hy"], ["Assamese", "as"], ["Avaric", "av"], ["Avestan", "ae"], ["Aymara", "ay"], ["Azerbaijani", "az"], ["Bambara", "bm"], ["Bashkir", "ba"], ["Basque", "eu"], ["Belarusian", "be"], ["Bengali (Bangla)", "bn"], ["Bihari", "bh"], ["Bislama", "bi"], ["Bosnian", "bs"], ["Breton", "br"], ["Bulgarian", "bg"], ["Burmese", "my"], ["Catalan", "ca"], ["Chamorro", "ch"], ["Chechen", "ce"], ["Chichewa, Chewa, Nyanja", "ny"], ["Chinese", "zh"], ["Chinese (Simplified)", "zh-Hans"], ["Chinese (Traditional)", "zh-Hant"], ["Chuvash", "cv"], ["Cornish", "kw"], ["Corsican", "co"], ["Cree", "cr"], ["Croatian", "hr"], ["Czech", "cs"], ["Danish", "da"], ["Divehi, Dhivehi, Maldivian", "dv"], ["Dutch", "nl"], ["Dzongkha", "dz"], ["English", "en-US"], ["Esperanto", "eo"], ["Estonian", "et"], ["Ewe", "ee"], ["Faroese", "fo"], ["Fijian", "fj"], ["Finnish", "fi"], ["French", "fr"], ["Fula, Fulah, Pulaar, Pular", "ff"], ["Galician", "gl"], ["Gaelic (Scottish)", "gd"], ["Gaelic (Manx)", "gv"], ["Georgian", "ka"], ["German", "de"], ["Greek", "el"], ["Greenlandic", "kl"], ["Guarani", "gn"], ["Gujarati", "gu"], ["Haitian Creole", "ht"], ["Hausa", "ha"], ["Hebrew", "he"], ["Herero", "hz"], ["Hindi", "hi"], ["Hiri Motu", "ho"], ["Hungarian", "hu"], ["Icelandic", "is"], ["Ido", "io"], ["Igbo", "ig"], ["Indonesian", "id, in"], ["Interlingua", "ia"], ["Interlingue", "ie"], ["Inuktitut", "iu"], ["Inupiak", "ik"], ["Irish", "ga"], ["Italian", "it"], ["Japanese", "ja"], ["Javanese", "jv"], ["Kalaallisut, Greenlandic", "kl"], ["Kannada", "kn"], ["Kanuri", "kr"], ["Kashmiri", "ks"], ["Kazakh", "kk"], ["Khmer", "km"], ["Kikuyu", "ki"], ["Kinyarwanda (Rwanda)", "rw"], ["Kirundi", "rn"], ["Kyrgyz", "ky"], ["Komi", "kv"], ["Kongo", "kg"], ["Korean", "ko"], ["Kurdish", "ku"], ["Kwanyama", "kj"], ["Lao", "lo"], ["Latin", "la"], ["Latvian (Lettish)", "lv"], ["Limburgish ( Limburger)", "li"], ["Lingala", "ln"], ["Lithuanian", "lt"], ["Luga-Katanga", "lu"], ["Luganda, Ganda", "lg"], ["Luxembourgish", "lb"], ["Manx", "gv"], ["Macedonian", "mk"], ["Malagasy", "mg"], ["Malay", "ms"], ["Malayalam", "ml"], ["Maltese", "mt"], ["Maori", "mi"], ["Marathi", "mr"], ["Marshallese", "mh"], ["Moldavian", "mo"], ["Mongolian", "mn"], ["Nauru", "na"], ["Navajo", "nv"], ["Ndonga", "ng"], ["Northern Ndebele", "nd"], ["Nepali", "ne"], ["Norwegian", "no"], ["Norwegian bokmål", "nb"], ["Norwegian nynorsk", "nn"], ["Nuosu", "ii"], ["Occitan", "oc"], ["Ojibwe", "oj"], ["Old Church Slavonic, Old Bulgarian", "cu"], ["Oriya", "or"], ["Oromo (Afaan Oromo)", "om"], ["Ossetian", "os"], ["Pāli", "pi"], ["Pashto, Pushto", "ps"], ["Persian (Farsi)", "fa"], ["Polish", "pl"], ["Portuguese", "pt"], ["Punjabi (Eastern)", "pa"], ["Quechua", "qu"], ["Romansh", "rm"], ["Romanian", "ro"], ["Russian", "ru"], ["Sami", "se"], ["Samoan", "sm"], ["Sango", "sg"], ["Sanskrit", "sa"], ["Serbian", "sr"], ["Serbo-Croatian", "sh"], ["Sesotho", "st"], ["Setswana", "tn"], ["Shona", "sn"], ["Sichuan Yi", "ii"], ["Sindhi", "sd"], ["Sinhalese", "si"], ["Siswati", "ss"], ["Slovak", "sk"], ["Slovenian", "sl"], ["Somali", "so"], ["Southern Ndebele", "nr"], ["Spanish", "es"], ["Sundanese", "su"], ["Swahili (Kiswahili)", "sw"], ["Swati", "ss"], ["Swedish", "sv"], ["Tagalog", "tl"], ["Tahitian", "ty"], ["Tajik", "tg"], ["Tamil", "ta"], ["Tatar", "tt"], ["Telugu", "te"], ["Thai", "th"], ["Tibetan", "bo"], ["Tigrinya", "ti"], ["Tonga", "to"], ["Tsonga", "ts"], ["Turkish", "tr"], ["Turkmen", "tk"], ["Twi", "tw"], ["Uyghur", "ug"], ["Ukrainian", "uk"], ["Urdu", "ur"], ["Uzbek", "uz"], ["Venda", "ve"], ["Vietnamese", "vi"], ["Volapük", "vo"], ["Wallon", "wa"], ["Welsh", "cy"], ["Wolof", "wo"], ["Western Frisian", "fy"], ["Xhosa", "xh"], ["Yiddish", "yi", "ji"], ["Yoruba", "yo"], ["Zhuang, Chuang", "za"], ["Zulu", "zu"] ], */
 		 intls: [ ["Arabic", "ar"], ["Armenian", "hy"], ["Chinese (Simplified)", "zh-Hans"], ["Dutch", "nl"], ["English", "en-US"], ["Esperanto", "eo"], ["Gaelic (Scottish)", "gd"], ["German", "de"], ["Greek", "el"], ["Hebrew", "he"], ["Hindi", "hi"], ["Irish", "ga"], ["Japanese", "ja"], ["Korean", "ko"], ["Malayalam", "ml"], ["Nepali", "ne"], ["Norwegian bokmål", "nb"], ["Russian", "ru"], ["Spanish", "es"], ["Uyghur", "ug"], ["Urdu", "ur"], ["Welsh", "cy"] ],
-		 currentIntl: navigator.language,
-		 lastIntl: navigator.language,
+		 currentIntl: localStorage.getItem("currentIntl") ?? navigator.language,
+		 lastIntl: localStorage.getItem("lastIntl") ?? navigator.language,
 		 yearCache: {},
 		 monthCache: {}
 	     };
@@ -130,6 +130,9 @@
 	     function parseISOString(s) {
 		 logFunCall(7);
 		 /* https://stackoverflow.com/a/27013409 */
+		 if ( s === null ) {
+		     return null;
+		 }
 		 var b = s.split(/\D+/);
 		 return new Date(Date.UTC(b[0], --b[1], b[2]));
 	     }
@@ -333,8 +336,13 @@
 		 if ( parseDate(newDate) == parseDate(calStat.currentDate) ) {
 		     return;
 		 }
+		 calStat.nextToLastDate = calStat.lastDate;
 		 calStat.lastDate = calStat.currentDate;
 		 calStat.currentDate = newDate;
+
+		 localStorage.setItem("currentDate", parseDate(calStat.currentDate));
+		 localStorage.setItem("lastDate", parseDate(calStat.lastDate));
+		 localStorage.setItem("nextToLastDate", parseDate(calStat.nextToLastDate));
 
 		 logDates();
 		 drawCalendar();
@@ -413,6 +421,9 @@
 		 calStat.lastIntl = calStat.currentIntl;
 		 calStat.currentIntl = newIntl;
 
+		 localStorage.setItem("currentIntl", calStat.currentIntl);
+		 localStorage.setItem("lastIntl", calStat.lastIntl);
+
 		 updateIntlPicker();
 		 drawCalendar();
 		 updateButtonsAndCalendar();
@@ -427,6 +438,21 @@
 		 }
 		 if ( currentIntl ) {
 		     currentIntl.selected = true;
+		 }
+	     }
+
+	     function drawLocalStoragePrevDateButtons() {
+		 logFunCall(3);
+		 let last = parseDate(calStat.lastDate),
+		     nextToLast = parseDate(calStat.nextToLastDate);
+
+		 let btnNextToLastDate = insertElement("button", dateLog, nextToLast, {class: nextToLast, type: "button"}),
+		     btnLastDate = insertElement("button", dateLog, last, [["class", last], ["type", "button"]]);
+		 btnLastDate.onclick = function(e) {
+		     updateDate(parseISOString(btnLastDate.classList[0]));
+		 }
+		 btnNextToLastDate.onclick = function(e) {
+		     updateDate(parseISOString(btnNextToLastDate.classList[0]));
 		 }
 	     }
 
@@ -530,10 +556,12 @@
 		 if ( calPick.value === calStat.layouts[0] ) {
 		     calStat.currentLayout = calStat.layouts[1];
 		     calPick.value = calStat.layouts[1];
+		     localStorage.setItem("currentLayout", calStat.currentLayout);
 		     swapMonthAndYearPicker();
 		 } else {
 		     calStat.currentLayout = calStat.layouts[0];
 		     calPick.value = calStat.layouts[0];
+		     localStorage.setItem("currentLayout", calStat.currentLayout);
 		     swapMonthAndYearPicker();
 		 }
 		 drawCalendar();
@@ -587,18 +615,33 @@
 		var foo = main.insertElement("foo"); */
 	     var main = insertElement("main");
 
+	     var admin = insertElement("footer", body, null, {id: "adminPanel"});
+	     var reset = insertElement("a", admin, "Reset", {href: ""});
+	     reset.onclick = function(e) {
+		 e.preventDefault();
+		 localStorage.clear();
+		 location.reload();
+	     }
+
 	     drawCalendar();
 
 	     /* If we do not call the one that is not default, its
 		options subnodes never get appended to DOM, so
 		populate and then remove it from DOM */
-	     drawMonthPicker();
-	     monthSelect.replaceWith(yearSelect);
+	     if ( calStat.currentLayout === calStat.layouts[0] )
+	     {
+		 drawMonthPicker();
+		 monthSelect.replaceWith(yearSelect);
+	     } else {
+		 drawYearPicker();
+		 yearSelect.replaceWith(monthSelect);
+	     }
 	     drawYearOrMonthPicker();
 
 	     drawIntlPicker();
-	     updateButtonsAndCalendar();
+	     drawLocalStoragePrevDateButtons();
 
+	     updateButtonsAndCalendar();
 	 })
 
 	</script>
