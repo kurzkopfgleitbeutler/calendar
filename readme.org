@@ -1,8 +1,13 @@
-#+Time-stamp: <2021-11-24T18:10:55>
-#+title: single-file interactive calendar (sfic)
+#+title: nief
 #+options: num:nil author:nil ^:t
 #+language: en
 
-goal: learn basic programming skills
+nettkalender i en fil
 
-restriction: one single file
+The goal in this is to train programming in JavaScript, learn about
+Web APIs, and experience firsthand what growing a project means.
+
+I've purposefully restricted this to
+1. one file
+2. no libraries
+to keep it as simple as possible.
