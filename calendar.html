@@ -554,6 +554,7 @@
 	     style.sheet.insertRule(`.permaText { white-space: pre-wrap; overflow: clip; }`);
 	     style.sheet.insertRule(`.today > .permaText { display: none; }`);
 	     style.sheet.insertRule(`.day textarea, .day input, .day button { display: none; }`);
+	     style.sheet.insertRule(`footer > * { margin-right: 1em; }`);
 	     /* console.log(document.styleSheets[0].cssRules); */
 
 	     var body = document.querySelector("body");
@@ -663,6 +664,33 @@
 		 e.preventDefault();
 		 localStorage.clear();
 		 location.reload();
+	     };
+
+	     var download = insertElement("button", admin, "Download", {type: "button", value: "save", id: "save"});
+	     download.onclick = function(e) {
+		 /* https://stackoverflow.com/questions/21479107/saving-html5-textarea-contents-to-file/30740104#30740104 */
+		 let output = {};
+		 for ( i = 0 ; i < localStorage.length ; i++ ) {
+		     let key = localStorage.key(i);
+		     output[key] = localStorage.getItem(key);
+		 }
+		 let textFileAsBlob = new Blob([ JSON.stringify(output) ], { type: 'text/json' });
+		 let fileNameToSaveAs = `nief_backup_${parseDate(new Date())}.json`;
+
+		 var downloadLink = document.createElement("a");
+		 downloadLink.download = fileNameToSaveAs;
+		 downloadLink.innerText = "Download File";
+		 if ( window.webkitURL != null ) {
+		     downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+		 } else {
+		     downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+		     downloadLink.onclick = function(e) {
+			 document.body.removeChild(e.target);
+		     }
+		     downloadLink.style.display = "none";
+		     document.body.appendChild(downloadLink);
+		 }
+		 downloadLink.click();
 	     }
 	     insertElement("a", admin, "GitHub", {href: "https://github.com/kurzkopfgleitbeutler/calendar"});
 
