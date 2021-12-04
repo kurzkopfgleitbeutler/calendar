@@ -663,8 +663,10 @@
 	     var reset = insertElement("a", admin, "Reset", {href: ""});
 	     reset.onclick = function(e) {
 		 e.preventDefault();
-		 localStorage.clear();
-		 location.reload();
+		 if ( window.confirm("Do you really want to delete all your entries?") ) {
+		     localStorage.clear();
+		     location.reload();
+		 }
 	     };
 
 	     var download = insertElement("button", admin, "Download", {type: "button", value: "save", id: "save"});
