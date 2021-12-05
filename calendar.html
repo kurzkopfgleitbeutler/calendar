@@ -506,7 +506,7 @@
 	     var style = insertElement("style", "head");
 
 	     /* https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties */
-	     style.sheet.insertRule(`:root {  }`);
+	     style.sheet.insertRule(`:root { --weekends: #eee; --today: #ddd; --borders: #bbb; }`);
 
 	     style.sheet.insertRule(`* { box-sizing: border-box; }`);
 	     style.sheet.insertRule(`html, body { margin: 0; padding: 0; width: 100%; height: 100%; font-size: 14; display: flex; flex-direction: column; }`);
@@ -525,24 +525,37 @@
 	     style.sheet.insertRule(`@media screen and (min-width: 500px) and (max-width: 800px) { .year { display: grid; grid-template-columns: repeat(${12 / 2}, 1fr); } }`);
 	     style.sheet.insertRule(`@media screen and (min-width: 800px)                        { .year { display: grid; grid-template-columns: repeat(${12}, 1fr); } }`);
 
-	     /* style.sheet.insertRule(`.year { display: flex; flex-direction: column; } }`); */
+	     /* style.sheet.insertRule(`.year { display: flex; flex-direction: row; }`); */
 	     /* style.sheet.insertRule(`@media screen and (min-width: 500px) and (max-width: 800px) { .year { display: grid; grid-template-columns: repeat(6, 1fr); } }`); */
 	     /* style.sheet.insertRule(`.year { display: grid; grid-template-columns: repeat(${12}, 1fr); }`); */
 	     /* style.sheet.insertRule(`.year { display: flex; flex-flow: row wrap; }`); */
 
 	     style.sheet.insertRule(`.month { min-width: 6em; display: flex; flex-direction: column; flex-grow: 1; }`);
-	     style.sheet.insertRule(`.monthHeader { width: 100%; text-align: center; font-size: 18; border-bottom: 2px solid #bbb; text-decoration: none; color: #000; }`);
-	     style.sheet.insertRule(`.day { border-bottom: 1px solid #ddd; font-size: 10; }`);
-	     style.sheet.insertRule(`.Sat, .Sun { border-bottom: 1px solid #ddd; background: #eee; }`);
-	     style.sheet.insertRule(`.today { border-bottom: 1px solid #bbb; background: #ddd !important; }`);
-	     /* style.sheet.insertRule(`.monthonly { display: grid; grid-template-columns: repeat(7, 1fr); }`); */
-	     style.sheet.insertRule(`.monthonly { display: grid; grid-template-columns: repeat(7, 1fr); }`);
-	     style.sheet.insertRule(`.monthonly > :nth-child(2) { grid-column-start: ${new Date(calStat.currentDate.getFullYear(), calStat.currentDate.getMonth(), 1).getDay()}; }`);
+	     style.sheet.insertRule(`.monthHeader { width: 100%; text-align: center; font-size: 18; border-bottom: 2px solid var(--borders); text-decoration: none; color: #000; }`);
+	     style.sheet.insertRule(`.day { border-bottom: 1px solid var(--today); font-size: 10; }`);
+	     style.sheet.insertRule(`.Sat, .Sun { border-bottom: 1px solid var(--today); background: var(--weekends); }`);
+	     style.sheet.insertRule(`.today { border-bottom: 1px solid var(--borders); background: var(--today) !important; }`);
+
+	     style.sheet.insertRule(`.monthonly { display: flex; flex-direction: column; }`);
+	     /* style.sheet.insertRule(`@media screen and (max-width: 500px) { .monthonly { display: flex; flex-direction: column; } }`);
+		style.sheet.insertRule(`@media screen and (min-width: 500px) { .monthonly { display: grid; grid-template-columns: repeat(7, 1fr); } }`); */
+
+	     style.sheet.insertRule(`.monthonly > * { min-height: 10vh; }`);
+	     /* for ( let i = 0 ; i < 12 ; i++ ) {
+		var tmp = new Date(calStat.currentDate.getFullYear(), i, 1);
+		var u = tmp.getDay();
+		console.log(new Intl.DateTimeFormat(calStat.currentIntl, { month: "long" }).format(tmp));
+		console.log('grid-column-start:', u);
+		// Mo: 1, Di:
+		} */
+	     /* style.sheet.insertRule(`.monthonly > :nth-child(2) { grid-column-start: ${tmp}; }`); */
+	     style.sheet.insertRule(`.monthonly > :first-child { grid-column-start: ${1}; }`);
 	     style.sheet.insertRule(`textarea { min-width: 100%; max-width: 100%; resize: none; overflow: hidden; border: none; outline: none; background: #ddd; }`);
 	     style.sheet.insertRule(`.permaText { white-space: pre-wrap; overflow: clip; }`);
 	     style.sheet.insertRule(`.today > .permaText { display: none; }`);
 	     style.sheet.insertRule(`.day textarea, .day input, .day button { display: none; }`);
 	     style.sheet.insertRule(`footer > * { margin-right: 1em; }`);
+	     style.sheet.insertRule(`#save { background: none; border: none; padding: 0; color: #069; text-decoration: underline; cursor: pointer; }`);
 	     /* console.log(document.styleSheets[0].cssRules); */
 
 	     var body = document.querySelector("body");
