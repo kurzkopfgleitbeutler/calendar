@@ -556,25 +556,6 @@
 		 );
 	     }
 
-	     /* var gridOrListPick = insertElement("input", ctrlBtns, null, [["id", "gridOrListPick"], ["type", "button"], ["value", calStat.gridOrList]]);
-		gridOrListPick.addEventListener("click", function(e) {
-		if ( gridOrListPick.value === "Grid" ) {
-		calStat.gridOrList = "List";
-		gridOrListPick.value = "List";
-		setCalendarLayout(".year",
-		{ "display": "flex",
-		"flex-direction": "column" });
-		} else {
-		calStat.gridOrList = "Grid";
-		gridOrListPick.value = "Grid";
-		setCalendarLayout(".year",
-		{ "display": "grid",
-		"grid-template-columns": "repeat(12, 1fr)" });
-		}
-		drawCalendar();
-		updateButtonsAndCalendar();
-		}); */
-
 	     var calPick = insertElement("input", ctrlBtns, null, [["id", "calPick"], ["type", "button"], ["value", calStat.currentLayout]]);
 	     calPick.addEventListener("click", function(e) {
 		 if ( calPick.value === calStat.layouts[0] ) {
@@ -591,9 +572,6 @@
 		 drawCalendar();
 		 updateButtonsAndCalendar();
 	     });
-
-	     /*  vs ⋮ and ≡ ☰ vs ▦ ▥  and ⃓⃦｜ */
-	     /* var testBtn = insertElement("button", ctrlBtns, "⋮ ≡ ▦"); */
 
 	     var btnToday = insertElement("button", ctrlBtns, "⦿", [["id", "todayBtn"]]);
 	     btnToday.onclick = function(e) {
@@ -623,13 +601,6 @@
 		     )
 		 );
 	     }
-
-	     /* var dateInput = insertElement("input", ctrlBtns, null, [["id", "inputDate"], ["value", parseDate(calStat.currentDate)], ["min", calStat.currentDate.getFullYear() - 101], ["step", ], ["max", calStat.currentDate.getFullYear() + 102], ["pattern", "\d{4}-\d{2}-\d{2}"]]);
-		dateInput.onchange = function(e) {
-		let tmp = parseISOString(dateInput.value);
-		console.log(tmp);
-		updateDate(tmp);
-		} */
 
 	     var dateLog = insertElement("div", header, null, [["id", "datelog"]]);
 
