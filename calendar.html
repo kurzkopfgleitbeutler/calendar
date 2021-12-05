@@ -44,6 +44,8 @@
 		 intls: [ ["Arabic", "ar"], ["Armenian", "hy"], ["Chinese (Simplified)", "zh-Hans"], ["Dutch", "nl"], ["English", "en-US"], ["Esperanto", "eo"], ["Gaelic (Scottish)", "gd"], ["German", "de"], ["Greek", "el"], ["Hebrew", "he"], ["Hindi", "hi"], ["Irish", "ga"], ["Japanese", "ja"], ["Korean", "ko"], ["Malayalam", "ml"], ["Nepali", "ne"], ["Norwegian bokmål", "nb"], ["Russian", "ru"], ["Spanish", "es"], ["Uyghur", "ug"], ["Urdu", "ur"], ["Welsh", "cy"] ],
 		 currentIntl: localStorage.getItem("currentIntl") ?? navigator.language,
 		 lastIntl: localStorage.getItem("lastIntl") ?? navigator.language,
+
+		 /* https://dev.to/kpendic/javascript-dynamically-generated-variable-names-34ke */
 		 yearCache: {},
 		 monthCache: {}
 	     };
@@ -149,16 +151,21 @@
 		 return new Intl.DateTimeFormat(theIntl, format).format(d);
 	     }
 
-	     function daysInMonth(month, year) {
+	     function daysInMonth(year, month) {
 		 logFunCall(7);
 		 /* https://stackoverflow.com/questions/315760/what-is-the-best-way-to-determine-the-number-of-days-in-a-month-with-javascript */
 		 return new Date(year, month + 1, 0).getDate();
 	     }
 
+	     function autoresize(elem) {
+		 logFunCall(7);
+		 elem.style.height = (elem.scrollHeight) + "px";
+	     }
+
 	     function drawDayPicker() {
 		 logFunCall(6);
 		 daySelect.innerHTML = "";
-		 for ( i = 1 ; i <= daysInMonth(calStat.currentDate.getMonth(), calStat.currentDate.getYear()) ; i++ ) {
+		 for ( i = 1 ; i <= daysInMonth(calStat.currentDate.getYear(), calStat.currentDate.getMonth()) ; i++ ) {
 		     insertElement("option", daySelect, i, [["value", i]]);
 		 }
 	     }
@@ -264,10 +271,6 @@
 		 }
 	     }
 
-	     function autoresize(elem) {
-		 elem.style.height = (elem.scrollHeight) + "px";
-	     }
-
 	     function createCalendarYearTree(y) {
 		 logFunCall(5);
 		 var year = insertElement("time", main, null, [["id", y + "_" + calStat.currentIntl], ["class", "year"], ["datetime", y]]);
@@ -278,35 +281,7 @@
 		     var monthName = new Intl.DateTimeFormat(calStat.currentIntl, { month: "short" }).format(new Date(y, m));
 		     var monthHeader = insertElement("a", month, monthName, [["class", "monthHeader"], ["id", monthName], ["href", "#" + monthName]]);
 
-		     for ( d = 1 ; d <= daysInMonth(m, y) ; d++ ) {
-
-			 var theDate = new Date(y, m, d);
-			 var weekDayName = new Intl.DateTimeFormat(calStat.currentIntl, { weekday: "short" }).format(theDate);
-			 var weekDayClass = new Intl.DateTimeFormat("en", { weekday: "short" }).format(theDate);
-			 var textContent = pad(d) + " " + weekDayName;
-			 var dateCurrentString = y + "-" + pad(m + 1) + "-" + pad(d);
-
-			 var day = insertElement("time", month, textContent, [["id", dateCurrentString], ["class", `${weekDayClass} day`], ["datetime", dateCurrentString]]);
-
-			 var retrieve = localStorage.getItem(dateCurrentString + "input");
-			 var perma = insertElement("div", day, retrieve, {id: dateCurrentString + "inputStore", class: "permaText"});
-			 var notes = insertElement("textarea", day, retrieve, {id: dateCurrentString + "input", maxlength: maxInputLength, wrap: "hard", placeholder: "write here" });
-			 notes.oninput = function(e) {
-			     let me = document.getElementById(this.id);
-			     let store = document.getElementById(this.id + "Store");
-			     autoresize(me);
-			     me.textContent = me.value;
-			     store.textContent = me.value;
-			     localStorage.setItem(me.id, me.value);
-			 };
-			 notes.onfocus = function(e) {
-			     autoresize(this);
-			 }
-
-			 day.onclick = function(e) {
-			     updateDate(parseISOString(this.getAttribute("datetime")));
-			 }
-		     }
+		     createMonth(y, m, month);
 		 }
 		 return year;
 	     }
@@ -331,40 +306,51 @@
 	     function createCalendarMonthTree(y, m) {
 		 logFunCall(5);
 		 var month = insertElement("time", main, null, [["id", y + "-" + m + "_" + calStat.currentIntl], ["class", "monthonly"], ["datetime", y  + "-" + m]]);
-
 		 var monthName = new Intl.DateTimeFormat(calStat.currentIntl, { month: "long" }).format(new Date(y, m));
 		 /* var monthHeader = insertElement("span", month, monthName, [["class", "monthHeader"]]); */
 
-		 for ( i = 1 ; i <= daysInMonth(m, y) ; i++ ) {
+		 createMonth(y, m, month);
 
-		     var theDate = new Date(y, m, i);
-		     var weekDayName = new Intl.DateTimeFormat(calStat.currentIntl, { weekday: "short" }).format(theDate);
-		     var weekDayClass = new Intl.DateTimeFormat("en", { weekday: "short" }).format(theDate);
-		     var textContent = `${String(i).padStart(2, "0")} ${weekDayName}`;
-		     var dateCurrentString = y + "-" + pad(m + 1) + "-" + pad(i);
-
-		     var day = insertElement("time", month, textContent, [["id", dateCurrentString], ["class", `${weekDayClass} day`], ["datetime", dateCurrentString]]);
-
-		     var retrieve = localStorage.getItem(dateCurrentString + "input");
-		     var perma = insertElement("div", day, retrieve, {id: dateCurrentString + "inputStore", class: "permaText"});
-		     var notes = insertElement("textarea", day, retrieve, {id: dateCurrentString + "input", maxlength: maxInputLength, wrap: "hard", placeholder: "write here" });
-		     notes.oninput = function(e) {
-			 let me = document.getElementById(this.id);
-			 let store = document.getElementById(this.id + "Store");
-			 autoresize(me);
-			 me.textContent = me.value;
-			 store.textContent = me.value;
-			 localStorage.setItem(me.id, me.value);
-		     };
-		     notes.onfocus = function(e) {
-			 autoresize(this);
-		     }
-
-		     day.onclick = function(e) {
-			 updateDate(parseISOString(this.getAttribute("datetime")));
-		     }
-		 }
 		 return month;
+	     }
+
+	     function createMonth(y, m, parent) {
+		 logFunCall(6);
+		 for ( d = 1 ; d <= daysInMonth(y, m) ; d++ ) {
+		     createDay(y, m, d, parent);
+		 }
+		 return parent;
+	     }
+
+	     function createDay(y, m, d, parent) {
+		 logFunCall(7);
+		 var theDate = new Date(y, m, d);
+		 var weekDayName = new Intl.DateTimeFormat(calStat.currentIntl, { weekday: "short" }).format(theDate);
+		 var weekDayClass = new Intl.DateTimeFormat("en", { weekday: "short" }).format(theDate);
+		 var textContent = pad(d) + " " + weekDayName;
+		 var dateCurrentString = y + "-" + pad(m + 1) + "-" + pad(d);
+
+		 var day = insertElement("time", parent, textContent, [["id", dateCurrentString], ["class", `${weekDayClass} day`], ["datetime", dateCurrentString]]);
+
+		 var retrieve = localStorage.getItem(dateCurrentString + "input");
+		 var perma = insertElement("div", day, retrieve, {id: dateCurrentString + "inputStore", class: "permaText"});
+		 var notes = insertElement("textarea", day, retrieve, {id: dateCurrentString + "input", maxlength: maxInputLength, wrap: "hard", placeholder: "write here" });
+		 notes.oninput = function(e) {
+		     let me = document.getElementById(this.id);
+		     let store = document.getElementById(this.id + "Store");
+		     autoresize(me);
+		     me.textContent = me.value;
+		     store.textContent = me.value;
+		     localStorage.setItem(me.id, me.value);
+		 };
+		 notes.onfocus = function(e) {
+		     autoresize(this);
+		 }
+		 day.onclick = function(e) {
+		     updateDate(parseISOString(this.getAttribute("datetime")));
+		 }
+
+		 return day;
 	     }
 
 	     function updateDate(newDate) {
