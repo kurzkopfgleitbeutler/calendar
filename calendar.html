@@ -183,7 +183,7 @@
 		 logFunCall(4);
 		 monthSelect.innerHTML = "";
 		 for ( i = 1 ; i <= 12 ; i++ ) {
-		     insertElement("option", monthSelect, i, [["id", "monthSelect" + i], ["value", i]]);
+		     insertElement("option", monthSelect, new Intl.DateTimeFormat(calStat.currentIntl, { month: "short" }).format(new Date(calStat.currentDate.getFullYear(), i - 1)), [["id", "monthSelect" + i], ["value", i]]);
 		 }
 	     }
 
@@ -411,6 +411,7 @@
 
 	     function updateMonthSelect() {
 		 logFunCall(3);
+		 drawMonthPicker();
 		 let lastSelect = document.getElementById(`monthSelect${calStat.lastDate.getMonth() + 1}`);
 		 let currentSelect = document.getElementById(`monthSelect${calStat.currentDate.getMonth() + 1}`);
 		 if ( lastSelect ) {
