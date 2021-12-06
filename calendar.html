@@ -507,6 +507,13 @@
 		 }
 		 downloadLink.click();
 	     }
+
+	     function uploadFile(fileList, callback) {
+		 logFunCall(3);
+		 var reader = new FileReader();
+		 reader.onload = callback;
+		 reader.readAsText(fileList.target.files[0]);
+	     }
 	     function updateTitleAndHeader() {
 		 logFunCall(3);
 		 if ( calStat.currentLayout === calStat.layouts[0] ) {
@@ -652,8 +659,22 @@
 		 createDownloadFile();
 	     }
 
+	     var upload = insertElement("button", admin, "Upload", {id: "upload", type: "button", value: "upload"});
+	     upload.onclick = function(e) {
+		 if ( uploadInput ) {
+		     uploadInput.click();
 		 }
 	     }
+	     var uploadInput = insertElement("input", admin, null, {id: "uploadInput", type: "file", style: "display:none"});
+	     uploadInput.onchange = function(e) {
+		 uploadFile(e, function(e) {
+		     updateStateFromFile(JSON.parse(e.target.result));
+		     drawCalendar();
+		     updateButtonsAndCalendar();
+		     calPick.value = calStat.currentLayout;
+		 });
+	     };
+
 	     insertElement("a", admin, "GitHub", {href: "https://github.com/kurzkopfgleitbeutler/calendar"});
 
 	     drawCalendar();
