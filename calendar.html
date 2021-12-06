@@ -645,9 +645,9 @@
 	     var main = insertElement("main");
 
 	     var admin = insertElement("footer", body, null, {id: "adminPanel"});
-	     var reset = insertElement("a", admin, "Reset", {href: ""});
+	     var reset = insertElement("button", admin, "Reset", {id: "reset"});
 	     reset.onclick = function(e) {
-		 e.preventDefault();
+		 /* e.preventDefault(); */
 		 if ( window.confirm("Do you really want to delete all your entries?") ) {
 		     localStorage.clear();
 		     location.reload();
